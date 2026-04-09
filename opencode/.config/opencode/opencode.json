@@ -4,45 +4,38 @@
   "autoupdate": true,
   "permission": {
     "read": {
-      "*": "allow",
-      "~/dev/*": "allow",
-      "~/code/*": "allow",
-      "~/Projects/*": "allow",
-      "~/*": "deny"
-    },
-    "edit": {
-      "*": "allow",
-      "~/dev/*": "deny",
-      "~/code/*": "deny",
-      "~/Projects/*": "deny",
-      "~/*": "deny"
+      "~/**": "deny",
+      "~/dev/**": "allow",
+      "~/code/**": "allow",
+      "~/Projects/**": "allow"
     },
     "glob": {
-      "*": "allow",
-      "~/dev/*": "allow",
-      "~/code/*": "allow",
-      "~/Projects/*": "allow",
-      "~/*": "deny"
+      "~/**": "deny",
+      "~/dev/**": "allow",
+      "~/code/**": "allow",
+      "~/Projects/**": "allow"
     },
     "grep": {
-      "*": "allow",
-      "~/dev/*": "allow",
-      "~/code/*": "allow",
-      "~/Projects/*": "allow",
-      "~/*": "deny"
+      "~/**": "deny",
+      "~/dev/**": "allow",
+      "~/code/**": "allow",
+      "~/Projects/**": "allow"
     },
     "list": {
-      "*": "allow",
-      "~/dev/*": "allow",
-      "~/code/*": "allow",
-      "~/Projects/*": "allow",
-      "~/*": "deny"
+      "~/**": "deny",
+      "~/dev/**": "allow",
+      "~/code/**": "allow",
+      "~/Projects/**": "allow"
+    },
+    "edit": {
+      "*": "deny",
+      "./**": "allow"
     },
     "external_directory": {
       "*": "deny",
-      "~/dev/*": "allow",
-      "~/code/*": "allow",
-      "~/Projects/*": "allow"
+      "~/dev/**": "allow",
+      "~/code/**": "allow",
+      "~/Projects/**": "allow"
     },
     "bash": "allow",
     "task": "allow",

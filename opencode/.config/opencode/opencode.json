@@ -1,0 +1,53 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "architect",
+  "autoupdate": true,
+  "permission": {
+    "read": {
+      "*": "allow",
+      "~/dev/*": "allow",
+      "~/code/*": "allow",
+      "~/Projects/*": "allow",
+      "~/*": "deny"
+    },
+    "edit": {
+      "*": "allow",
+      "~/dev/*": "deny",
+      "~/code/*": "deny",
+      "~/Projects/*": "deny",
+      "~/*": "deny"
+    },
+    "glob": {
+      "*": "allow",
+      "~/dev/*": "allow",
+      "~/code/*": "allow",
+      "~/Projects/*": "allow",
+      "~/*": "deny"
+    },
+    "grep": {
+      "*": "allow",
+      "~/dev/*": "allow",
+      "~/code/*": "allow",
+      "~/Projects/*": "allow",
+      "~/*": "deny"
+    },
+    "list": {
+      "*": "allow",
+      "~/dev/*": "allow",
+      "~/code/*": "allow",
+      "~/Projects/*": "allow",
+      "~/*": "deny"
+    },
+    "external_directory": {
+      "*": "deny",
+      "~/dev/*": "allow",
+      "~/code/*": "allow",
+      "~/Projects/*": "allow"
+    },
+    "bash": "allow",
+    "task": "allow",
+    "skill": "allow",
+    "question": "allow",
+    "todowrite": "allow"
+  }
+}

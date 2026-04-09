@@ -5,26 +5,38 @@
   "permission": {
     "read": {
       "~/**": "deny",
+      "~/dev": "allow",
       "~/dev/**": "allow",
+      "~/code": "allow",
       "~/code/**": "allow",
+      "~/Projects": "allow",
       "~/Projects/**": "allow"
     },
     "glob": {
       "~/**": "deny",
+      "~/dev": "allow",
       "~/dev/**": "allow",
+      "~/code": "allow",
       "~/code/**": "allow",
+      "~/Projects": "allow",
       "~/Projects/**": "allow"
     },
     "grep": {
       "~/**": "deny",
+      "~/dev": "allow",
       "~/dev/**": "allow",
+      "~/code": "allow",
       "~/code/**": "allow",
+      "~/Projects": "allow",
       "~/Projects/**": "allow"
     },
     "list": {
       "~/**": "deny",
+      "~/dev": "allow",
       "~/dev/**": "allow",
+      "~/code": "allow",
       "~/code/**": "allow",
+      "~/Projects": "allow",
       "~/Projects/**": "allow"
     },
     "edit": {
@@ -33,8 +45,11 @@
     },
     "external_directory": {
       "*": "deny",
+      "~/dev": "allow",
       "~/dev/**": "allow",
+      "~/code": "allow",
       "~/code/**": "allow",
+      "~/Projects": "allow",
       "~/Projects/**": "allow"
     },
     "bash": "allow",

@@ -5,6 +5,10 @@
   "permission": {
     "read": {
       "~/**": "deny",
+      "~/.config": "ask",
+      "~/.config/**": "ask",
+      "~/.local": "ask",
+      "~/.local/**": "ask",
       "~/dev": "allow",
       "~/dev/**": "allow",
       "~/code": "allow",
@@ -62,6 +66,10 @@
     },
     "glob": {
       "~/**": "deny",
+      "~/.config": "ask",
+      "~/.config/**": "ask",
+      "~/.local": "ask",
+      "~/.local/**": "ask",
       "~/dev": "allow",
       "~/dev/**": "allow",
       "~/code": "allow",
@@ -119,6 +127,10 @@
     },
     "grep": {
       "~/**": "deny",
+      "~/.config": "ask",
+      "~/.config/**": "ask",
+      "~/.local": "ask",
+      "~/.local/**": "ask",
       "~/dev": "allow",
       "~/dev/**": "allow",
       "~/code": "allow",
@@ -176,6 +188,10 @@
     },
     "list": {
       "~/**": "deny",
+      "~/.config": "ask",
+      "~/.config/**": "ask",
+      "~/.local": "ask",
+      "~/.local/**": "ask",
       "~/dev": "allow",
       "~/dev/**": "allow",
       "~/code": "allow",
@@ -237,6 +253,10 @@
     },
     "external_directory": {
       "*": "deny",
+      "~/.config": "ask",
+      "~/.config/**": "ask",
+      "~/.local": "ask",
+      "~/.local/**": "ask",
       "~/dev": "allow",
       "~/dev/**": "allow",
       "~/code": "allow",

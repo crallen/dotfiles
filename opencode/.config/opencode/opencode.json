@@ -247,10 +247,7 @@
       "~/Projects/**/secrets*.yml": "deny",
       "~/Projects/**/secrets*.json": "deny"
     },
-    "edit": {
-      "*": "deny",
-      "./**": "allow"
-    },
+    "edit": "allow",
     "external_directory": {
       "*": "deny",
       "~/.config": "ask",

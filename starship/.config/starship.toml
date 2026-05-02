@@ -1,5 +1,15 @@
 add_newline = true
-format = "$directory$git_branch$git_status$line_break$character"
+format = "$username$hostname$directory$git_branch$git_status$line_break$character"
+
+[username]
+ssh_only = true
+show_always = false
+format = "[$user](bold blue)"
+
+[hostname]
+ssh_only = true
+format = "[@$hostname](bold blue) "
+trim_at = "."
 
 [directory]
 truncation_length = 3

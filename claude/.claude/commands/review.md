@@ -1,9 +1,11 @@
 ---
 description: Review staged or unstaged code changes for quality, security, and best practices
+agent: code-reviewer
+context: fork
 disable-model-invocation: true
 ---
 
-Use the `@code-reviewer` subagent to review the following code for quality, security, performance, and maintainability issues.
+Review the following code for quality, security, performance, and maintainability issues.
 
 If specific files are named, focus there. Otherwise, review the current working diff below: prefer the staged diff when present; fall back to the unstaged diff when nothing is staged. If the diff includes sensitive-looking files (`.env*`, keys, certs, credentials, or similar), stop and tell the user to redact or remove them before review.
 

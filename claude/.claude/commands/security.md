@@ -1,9 +1,11 @@
 ---
 description: Run a security assessment on code, configuration, and dependencies
+agent: security-analyst
+context: fork
 disable-model-invocation: true
 ---
 
-Use the `@security-analyst` subagent to perform a security assessment of the codebase.
+Perform a security assessment of the codebase.
 
 If specific files or directories are mentioned, focus the analysis there. Otherwise, assess the overall project.
 

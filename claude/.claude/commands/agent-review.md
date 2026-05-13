@@ -1,9 +1,11 @@
 ---
 description: Review agents, skills, and commands for correctness, consistency, and best practices
+agent: agent-reviewer
+context: fork
 disable-model-invocation: true
 ---
 
-Use the `@agent-reviewer` subagent to review the existing agents, skills, and slash commands for correctness, consistency, and adherence to conventions. Check structural correctness, cross-references, permission models, and quality.
+Review the existing agents, skills, and slash commands for correctness, consistency, and adherence to conventions. Check structural correctness, cross-references, permission models, and quality.
 
 If specific artifacts are named, focus the review there. Otherwise, audit the full suite.
 

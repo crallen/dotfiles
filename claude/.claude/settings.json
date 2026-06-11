@@ -1,8 +1,22 @@
 {
-  "permissions": {
-    "defaultMode": "auto"
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
   },
-  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "auto",
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Read(**/credentials*.json)",
+      "Read(**/secrets/**)"
+    ]
+  },
   "attribution": {
     "commit": ""
   }

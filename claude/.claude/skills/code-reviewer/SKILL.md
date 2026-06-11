@@ -1,5 +1,6 @@
 ---
 description: Review staged or unstaged code changes for quality, security, and best practices
+argument-hint: [files to focus on (optional)]
 agent: code-reviewer
 context: fork
 disable-model-invocation: true

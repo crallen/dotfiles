@@ -1,5 +1,6 @@
 ---
 description: Build, update, or fix frontend UI components and pages
+argument-hint: [request]
 disable-model-invocation: true
 ---
 

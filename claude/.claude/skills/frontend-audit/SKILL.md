@@ -1,5 +1,6 @@
 ---
 description: Audit frontend quality, states, responsiveness, and anti-patterns without editing files
+argument-hint: [surface to audit]
 agent: frontend-auditor
 context: fork
 disable-model-invocation: true

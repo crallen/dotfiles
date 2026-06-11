@@ -1,5 +1,6 @@
 ---
 description: Start a systematic debugging session for a described issue
+argument-hint: [issue description]
 disable-model-invocation: true
 ---
 

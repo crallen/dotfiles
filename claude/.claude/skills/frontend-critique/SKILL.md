@@ -1,5 +1,6 @@
 ---
 description: Critique frontend UX and visual direction, then suggest targeted improvements
+argument-hint: [surface to critique]
 agent: frontend-auditor
 context: fork
 disable-model-invocation: true

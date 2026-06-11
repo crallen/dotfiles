@@ -1,5 +1,6 @@
 ---
 description: Review agents, skills, and commands for correctness, consistency, and best practices
+argument-hint: [artifacts to focus on (optional)]
 agent: agent-reviewer
 context: fork
 disable-model-invocation: true
@@ -12,10 +13,7 @@ If specific artifacts are named, focus the review there. Otherwise, audit the fu
 Current agents:
 !`ls ~/.claude/agents/ 2>/dev/null || echo "(none)"`
 
-Current skills:
+Current skills (reference skills and workflow skills / slash commands):
 !`ls ~/.claude/skills/ 2>/dev/null || echo "(none)"`
-
-Current commands:
-!`ls ~/.claude/commands/ 2>/dev/null || echo "(none)"`
 
 $ARGUMENTS

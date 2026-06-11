@@ -1,5 +1,6 @@
 ---
 description: Research a goal and produce a design spec with task checklist before any work begins
+argument-hint: [goal]
 context: fork
 agent: architect
 disable-model-invocation: true

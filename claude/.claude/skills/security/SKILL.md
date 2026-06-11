@@ -1,5 +1,6 @@
 ---
 description: Run a security assessment on code, configuration, and dependencies
+argument-hint: [scope (optional)]
 agent: security-analyst
 context: fork
 disable-model-invocation: true

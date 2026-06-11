@@ -1,5 +1,6 @@
 ---
 description: Prepare a release with changelog, version bump, and release notes
+argument-hint: [version hint (optional)]
 disable-model-invocation: true
 ---
 

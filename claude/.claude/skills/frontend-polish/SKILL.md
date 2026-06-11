@@ -1,5 +1,6 @@
 ---
 description: Apply focused frontend polish before handoff with verification and restraint
+argument-hint: [surface to polish]
 disable-model-invocation: true
 ---
 

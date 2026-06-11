@@ -1,5 +1,6 @@
 ---
 description: Design or modify database schemas, migrations, queries, and indexes
+argument-hint: [request]
 disable-model-invocation: true
 ---
 

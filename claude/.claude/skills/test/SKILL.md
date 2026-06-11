@@ -1,5 +1,6 @@
 ---
 description: Run tests, analyze results, and suggest improvements
+argument-hint: [scope (optional)]
 disable-model-invocation: true
 ---
 

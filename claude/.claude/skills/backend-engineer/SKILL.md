@@ -1,5 +1,6 @@
 ---
 description: Implement or modify backend application code
+argument-hint: [request]
 disable-model-invocation: true
 ---
 

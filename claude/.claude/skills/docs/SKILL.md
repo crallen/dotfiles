@@ -1,5 +1,6 @@
 ---
 description: Generate or update project documentation
+argument-hint: [doc type or target (optional)]
 disable-model-invocation: true
 ---
 

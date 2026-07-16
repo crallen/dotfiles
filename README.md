@@ -114,8 +114,9 @@ The OpenCode config currently includes:
 ## Acknowledgments
 
 The Claude Code and OpenCode agent suites draw inspiration from Matt Pocock's
-[skills](https://github.com/mattpocock/skills) repo — the `skill-design` and
-`code-review-checklist` skills adapt material from it directly.
+[skills](https://github.com/mattpocock/skills) repo — several skills (`skill-design`,
+`code-review-checklist`, `domain-modeling`, and the grill skills) adapt material from
+it directly.
 
 ## Notes
 

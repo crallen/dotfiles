@@ -123,3 +123,7 @@ it directly.
 - This repo is optimized for my own workflow, so documentation is intentionally practical rather than exhaustive.
 - Add/remove/rename files in a Stow package usually means running `stow --restow <package>`.
 - Editing an already-symlinked file usually just requires reloading the relevant app.
+
+## License
+
+[MIT](LICENSE)

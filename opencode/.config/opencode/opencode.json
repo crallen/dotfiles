@@ -288,5 +288,8 @@
     "skill": "allow",
     "question": "allow",
     "todowrite": "allow"
-  }
+  },
+  "plugin": [
+    "file:/home/chris/code/opencode-loop-plugin"
+  ]
 }

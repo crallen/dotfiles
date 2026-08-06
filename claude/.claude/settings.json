@@ -1,6 +1,7 @@
 {
   "attribution": {
-    "commit": ""
+    "commit": "",
+    "pr": ""
   },
   "permissions": {
     "deny": [
@@ -14,6 +15,10 @@
       "Read(./.env.test)",
       "Read(./.env.staging)",
       "Read(./.env.ci)",
+      "Read(./.env.backup)",
+      "Read(./.env.secret)",
+      "Read(./.envrc)",
+      "Read(./.npmrc)",
       "Read(**/.env)",
       "Read(**/.env.local)",
       "Read(**/.env.*.local)",
@@ -24,11 +29,24 @@
       "Read(**/.env.test)",
       "Read(**/.env.staging)",
       "Read(**/.env.ci)",
+      "Read(**/.env.backup)",
+      "Read(**/.env.secret)",
+      "Read(**/.envrc)",
+      "Read(**/.npmrc)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/*.tfvars)",
+      "Read(**/*.tfvars.json)",
       "Read(**/id_rsa*)",
       "Read(**/id_ed25519*)",
+      "Read(**/id_ecdsa*)",
       "Read(**/credentials*.json)",
+      "Read(**/service-account*.json)",
+      "Read(**/secrets*.yaml)",
+      "Read(**/secrets*.yml)",
+      "Read(**/secrets*.json)",
       "Read(**/secrets/**)"
     ],
     "defaultMode": "auto"

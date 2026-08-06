@@ -52,8 +52,8 @@ CI via `.github/workflows/validate.yml`. Run it after any change to an agent, sk
 command, or either index document:
 
 ```sh
-scripts/validate-config.py        # exit 1 on any problem
-scripts/validate-config.py -v     # also list the checks that passed
+scripts/validate-config.py        # list every check and what it covered; exit 1 on any problem
+scripts/validate-config.py -q     # only failures and the summary, for a git hook
 ```
 
 Two skills are deliberately **not** synced and stay hand-maintained on both sides —

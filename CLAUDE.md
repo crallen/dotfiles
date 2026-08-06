@@ -56,10 +56,13 @@ scripts/validate-config.py        # list every check and what it covered; exit 1
 scripts/validate-config.py -q     # only failures and the summary, for a git hook
 ```
 
-Two skills are deliberately **not** synced and stay hand-maintained on both sides —
-`agent-authoring` (documents each platform's own schemas) and `grill` (claude's is a
-command skill; the shared methodology lives in `claude/.claude/skills/grill-methodology/`
-and syncs to `opencode/.../skills/grill/`). Both are listed in the script's `SKIP`.
+One skill is deliberately **not** synced and stays hand-maintained on both sides:
+`agent-authoring` (documents each platform's own schemas) — the only entry in the
+script's `SKIP`. Sharing is otherwise opt-in by existence: a claude skill syncs only if
+`opencode/.../skills/<name>/` already exists, which is why claude-only workflow skills
+like `grill` (the command; its shared methodology in `grill-methodology/` syncs normally)
+need no SKIP entry. `skill-design` is deliberately claude-only for now — its guidance is
+written against Claude Code's skill machinery; share it only after platform-neutralizing it.
 
 ## The `claude/` package is the live Claude Code config
 

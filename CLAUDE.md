@@ -26,8 +26,8 @@ config file, place it inside the matching package at the path it should occupy u
   no restow needed (just reload the affected app).
 - **Adding, deleting, or renaming files** in a package requires `stow --restow <package>`
   to update the symlinks — *except* inside a directory stow tree-folded into a single
-  symlink (`~/.claude/skills`, `~/.config/opencode/skills`). Stow never descends into
-  those, so files added there are live immediately.
+  symlink (`~/.claude/skills`, `~/.claude/output-styles`, `~/.config/opencode/skills`).
+  Stow never descends into those, so files added there are live immediately.
 - Files are edited **in this repo**, never through the `~` symlink targets.
 
 ## Shared skills are generated — edit `claude/`, never `opencode/`

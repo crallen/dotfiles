@@ -79,6 +79,7 @@ The Claude Code config (`~/.claude/`) — a custom suite of software-engineering
 
 - `agents/` — specialist subagent definitions (code review, security, testing, debugging, frontend/backend, etc.)
 - `skills/` — reference skills plus user-invocable workflow skills (the `/`-commands)
+- `output-styles/` — alternate response styles selectable with `/output-style`
 - `CLAUDE.md` — suite overview and tech-lead operating instructions
 - `settings.json` — Claude Code runtime settings
 

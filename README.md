@@ -119,6 +119,13 @@ The Claude Code and OpenCode agent suites draw inspiration from Matt Pocock's
 `code-review-checklist`, `domain-modeling`, and the grill skills) adapt material from
 it directly.
 
+They also draw on Cursor's [pstack](https://github.com/cursor/plugins/tree/main/pstack)
+skills. The `unslop`, `why`, and `blast-radius` skills, the `coding-guardrails` principle
+references (type-system discipline, idempotency, build-the-lever, encode-lessons-in-structure),
+and the `doc-templates` framework guidance (Diátaxis, Simplified Technical English) are
+independent reimplementations of ideas from it — reworked in our own words, since that repo
+carries no license.
+
 ## Notes
 
 - This repo is optimized for my own workflow, so documentation is intentionally practical rather than exhaustive.

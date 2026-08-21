@@ -62,5 +62,8 @@
   "disableWorkflows": true,
   "disableRemoteControl": true,
   "disableClaudeAiConnectors": true,
-  "disableArtifact": true
+  "disableArtifact": true,
+  "env": {
+    "CLAUDE_CODE_DISABLE_CRON": "1"
+  }
 }

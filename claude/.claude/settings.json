@@ -63,6 +63,7 @@
   "disableRemoteControl": true,
   "disableClaudeAiConnectors": true,
   "disableArtifact": true,
+  "autoMemoryEnabled": false,
   "env": {
     "CLAUDE_CODE_DISABLE_CRON": "1"
   }

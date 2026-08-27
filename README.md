@@ -115,9 +115,9 @@ The OpenCode config currently includes:
 ## Acknowledgments
 
 The Claude Code and OpenCode agent suites draw inspiration from Matt Pocock's
-[skills](https://github.com/mattpocock/skills) repo — several skills (`skill-design`,
-`code-review-checklist`, `domain-modeling`, and the grill skills) adapt material from
-it directly.
+[skills](https://github.com/mattpocock/skills) repo (MIT) — several skills (`skill-design`,
+`code-review-checklist`, `domain-modeling`, the grill skills, and the wayfinder skills)
+adapt material from it directly.
 
 They also draw on Cursor's [pstack](https://github.com/cursor/plugins/tree/main/pstack)
 skills. The `unslop`, `why`, and `blast-radius` skills, the `coding-guardrails` principle

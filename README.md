@@ -67,29 +67,6 @@ Because `.stowrc` sets `--target=~`, this will symlink:
 - `starship/.config/starship.toml` → `~/.config/starship.toml`
 - `tmux/.tmux.conf` → `~/.tmux.conf`
 
-## Common Maintenance
-
-### Re-apply after adding, deleting, or renaming files
-
-```bash
-stow --restow <package>
-```
-
-Examples:
-
-```bash
-stow --restow claude
-stow --restow ghostty
-stow --restow neovim
-stow --restow opencode
-stow --restow starship
-stow --restow tmux
-```
-
-### After editing existing symlinked files
-
-Usually no restow is needed if the file is already symlinked. Reload the affected app instead.
-
 ## What lives here
 
 ### `claude`
@@ -150,8 +127,11 @@ The agent suite's attribution lives with the suite, in
 ## Notes
 
 - This repo is optimized for my own workflow, so documentation is intentionally practical rather than exhaustive.
-- Add/remove/rename files in a Stow package usually means running `stow --restow <package>`.
-- Editing an already-symlinked file usually just requires reloading the relevant app.
+- Editing an already-symlinked file is live — reload the affected app, nothing else.
+- Adding, deleting, or renaming a file in a package needs `stow --restow <package>`.
+- Suite content is the exception: skills reach `claude` and `opencode` through a single
+  whole-directory link, so anything added upstream is already live. `codex` links each
+  skill individually, so a newly shared one needs `make relink`.
 
 ## License
 

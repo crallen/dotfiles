@@ -58,8 +58,9 @@ Stowing yields a chain — `~/.claude/skills` → `claude/.claude/skills` →
 The `codex` package links **per skill** rather than linking the `skills` directory
 whole, because `~/.codex/skills` is Codex's own directory: it holds the bundled
 `.system` skills. Stow descends into it and adds the suite's skills alongside them.
-That also means adding a skill to Codex needs `stow --restow codex`, unlike the
-claude and opencode packages where the whole directory is one link.
+That also means a newly shared skill needs `make relink` before Codex sees it —
+restow alone is not enough, because the package has no link to that skill yet.
+The claude and opencode packages need nothing, their whole directory being one link.
 
 **Changes to an agent, skill, or command belong in the submodule**, not here. Follow
 `agent-suite/README.md` for its sync and validation rules; its own CI enforces them.

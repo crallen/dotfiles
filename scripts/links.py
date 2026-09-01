@@ -42,6 +42,7 @@ FIXED: list[tuple[str, str]] = [
     ("opencode/.config/opencode/commands", f"../../../{SUITE}/platforms/opencode/commands"),
     ("opencode/.config/opencode/skills",   f"../../../{SUITE}/platforms/opencode/skills"),
     ("opencode/.config/opencode/AGENTS.md", f"../../../{SUITE}/platforms/opencode/AGENTS.md"),
+    ("codex/.codex/AGENTS.md",             f"../../{SUITE}/platforms/codex/AGENTS.md"),
 ]
 
 CODEX_PKG = "codex/.codex/skills"

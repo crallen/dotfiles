@@ -11,6 +11,7 @@ symlinks its contents into `~`.
 | Package | Symlinks to |
 |---|---|
 | `claude/.claude/*` | `~/.claude/*` |
+| `codex/.codex/AGENTS.md` | `~/.codex/AGENTS.md` |
 | `codex/.codex/skills/*` | `~/.codex/skills/*` |
 | `ghostty/.config/ghostty/*` | `~/.config/ghostty/*` |
 | `neovim/.config/nvim/*` | `~/.config/nvim/*` |
@@ -48,6 +49,7 @@ The two harness packages hold symlinks into it rather than real files:
 | `opencode/.config/opencode/commands` | `agent-suite/platforms/opencode/commands` |
 | `opencode/.config/opencode/skills` | `agent-suite/platforms/opencode/skills` |
 | `opencode/.config/opencode/AGENTS.md` | `agent-suite/platforms/opencode/AGENTS.md` |
+| `codex/.codex/AGENTS.md` | `agent-suite/platforms/codex/AGENTS.md` |
 | `codex/.codex/skills/<name>` | `agent-suite/platforms/codex/skills/<name>` |
 
 Stowing yields a chain — `~/.claude/skills` → `claude/.claude/skills` →

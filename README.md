@@ -13,7 +13,7 @@ dotfiles/
 ├── claude/
 │   └── .claude/            # Claude Code config; agents/skills/CLAUDE.md link into agent-suite/
 ├── codex/
-│   └── .codex/skills/      # Codex skills; each one links into agent-suite/
+│   └── .codex/             # Codex AGENTS.md + skills; all link into agent-suite/
 ├── ghostty/
 │   └── .config/ghostty/    # Ghostty terminal config
 ├── neovim/
@@ -99,13 +99,16 @@ The Claude Code config (`~/.claude/`):
 
 ### `codex`
 
-The Codex skills directory (`~/.codex/skills/`):
+The Codex config (`~/.codex/`):
 
-- one symlink per shared skill, into
+- `AGENTS.md` — Codex's own index of the suite; it has no named agent roster and
+  invokes skills as `$name`, so it gets a document shaped for that rather than a
+  copy of the Claude one
+- `skills/` — one symlink per shared skill, into
   [agent-suite](https://github.com/crallen/agent-suite); edit them there
 
-Linked per skill rather than as a whole directory, because Codex owns
-`~/.codex/skills` and keeps its bundled `.system` skills there. `config.toml` is
+Skills are linked individually rather than as a whole directory, because Codex owns
+`~/.codex/skills` and keeps its bundled `.system` set there. `config.toml` is
 deliberately not stowed — Codex rewrites it at runtime.
 
 ### `ghostty`

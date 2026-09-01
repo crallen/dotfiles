@@ -7,6 +7,8 @@ Personal dotfiles managed with GNU Stow.
 ```text
 dotfiles/
 ├── .stowrc                 # Stow target config (`~`)
+├── Makefile                # install / check / relink / update / status
+├── scripts/links.py        # Owns the suite symlink manifest; --relink repairs it
 ├── agent-suite/            # Submodule: agents, skills, commands (not a Stow package)
 ├── claude/
 │   └── .claude/            # Claude Code config; agents/skills/CLAUDE.md link into agent-suite/
@@ -41,9 +43,12 @@ Clone with the submodule, then stow from the repo root:
 
 ```bash
 git clone --recurse-submodules git@github.com:crallen/dotfiles.git
-# already cloned? git submodule update --init
-stow claude codex ghostty neovim opencode starship tmux
+cd dotfiles && make install
 ```
+
+`make install` checks out the submodule and stows every package, reporting any
+whose target already holds a real file. `make help` lists the rest; `make check`
+verifies the suite symlinks and runs the suite's validator.
 
 `agent-suite/` is a submodule, not a Stow package — it is never stowed directly. The
 `claude` and `opencode` packages symlink into it, so the suite must be checked out

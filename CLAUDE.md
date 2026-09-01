@@ -79,6 +79,25 @@ On a fresh machine, clone with `--recurse-submodules` (or run `git submodule upd
 Claude Code configuration. Beyond the submodule symlinks above, it holds `settings.json`
 and the other harness-local files.
 
+## Managing it
+
+`make help` lists the targets. The two worth knowing:
+
+```sh
+make check    # every suite link resolves, then the suite's own validator
+make relink   # repair the links and restow codex
+```
+
+`make check` covers something neither repo's own tooling can. The suite's
+`validate-config.py` runs inside the submodule and cannot see this repo, so a skill
+shared to codex upstream can pass every check there while never reaching Codex,
+because the `codex` package has no matching link. `scripts/links.py` owns that
+manifest — the seven whole-directory links plus one per codex skill — and `--relink`
+repairs anything missing, wrong, or stale.
+
+`make status` shows which packages are stowed; `make install` checks out the
+submodule and stows everything; `make update` pulls the latest suite revision.
+
 ## Conventions
 
 - Commits use Conventional Commits, scoped by package name (e.g. `docs(readme): ...`,

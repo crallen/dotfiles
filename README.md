@@ -134,4 +134,4 @@ carries no license.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Third-party attribution is in [NOTICE](NOTICE).

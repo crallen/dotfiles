@@ -11,6 +11,7 @@ symlinks its contents into `~`.
 | Package | Symlinks to |
 |---|---|
 | `claude/.claude/*` | `~/.claude/*` |
+| `codex/.codex/skills/*` | `~/.codex/skills/*` |
 | `ghostty/.config/ghostty/*` | `~/.config/ghostty/*` |
 | `neovim/.config/nvim/*` | `~/.config/nvim/*` |
 | `opencode/.config/opencode/*` | `~/.config/opencode/*` |
@@ -47,9 +48,16 @@ The two harness packages hold symlinks into it rather than real files:
 | `opencode/.config/opencode/commands` | `agent-suite/platforms/opencode/commands` |
 | `opencode/.config/opencode/skills` | `agent-suite/platforms/opencode/skills` |
 | `opencode/.config/opencode/AGENTS.md` | `agent-suite/platforms/opencode/AGENTS.md` |
+| `codex/.codex/skills/<name>` | `agent-suite/platforms/codex/skills/<name>` |
 
-Stowing yields a two-hop chain — `~/.claude/skills` → `claude/.claude/skills` →
+Stowing yields a chain — `~/.claude/skills` → `claude/.claude/skills` →
 `agent-suite/skills` — which every harness resolves transparently.
+
+The `codex` package links **per skill** rather than linking the `skills` directory
+whole, because `~/.codex/skills` is Codex's own directory: it holds the bundled
+`.system` skills. Stow descends into it and adds the suite's skills alongside them.
+That also means adding a skill to Codex needs `stow --restow codex`, unlike the
+claude and opencode packages where the whole directory is one link.
 
 **Changes to an agent, skill, or command belong in the submodule**, not here. Follow
 `agent-suite/README.md` for its sync and validation rules; its own CI enforces them.

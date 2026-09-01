@@ -10,6 +10,8 @@ dotfiles/
 ├── agent-suite/            # Submodule: agents, skills, commands (not a Stow package)
 ├── claude/
 │   └── .claude/            # Claude Code config; agents/skills/CLAUDE.md link into agent-suite/
+├── codex/
+│   └── .codex/skills/      # Codex skills; each one links into agent-suite/
 ├── ghostty/
 │   └── .config/ghostty/    # Ghostty terminal config
 ├── neovim/
@@ -26,6 +28,7 @@ dotfiles/
 
 - GNU Stow
 - Claude Code (for the `claude` package)
+- Codex (for the `codex` package)
 - Starship (for the `starship` package)
 - OpenCode (for the `opencode` package)
 - Neovim (for the `neovim` package)
@@ -39,7 +42,7 @@ Clone with the submodule, then stow from the repo root:
 ```bash
 git clone --recurse-submodules git@github.com:crallen/dotfiles.git
 # already cloned? git submodule update --init
-stow claude ghostty neovim opencode starship tmux
+stow claude codex ghostty neovim opencode starship tmux
 ```
 
 `agent-suite/` is a submodule, not a Stow package — it is never stowed directly. The
@@ -88,6 +91,17 @@ The Claude Code config (`~/.claude/`):
   [agent-suite](https://github.com/crallen/agent-suite); edit them there
 - `output-styles/` — alternate response styles selectable with `/output-style`
 - `settings.json` — Claude Code runtime settings
+
+### `codex`
+
+The Codex skills directory (`~/.codex/skills/`):
+
+- one symlink per shared skill, into
+  [agent-suite](https://github.com/crallen/agent-suite); edit them there
+
+Linked per skill rather than as a whole directory, because Codex owns
+`~/.codex/skills` and keeps its bundled `.system` skills there. `config.toml` is
+deliberately not stowed — Codex rewrites it at runtime.
 
 ### `ghostty`
 

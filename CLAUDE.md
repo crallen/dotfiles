@@ -44,7 +44,7 @@ The two harness packages hold symlinks into it rather than real files:
 |---|---|
 | `claude/.claude/agents` | `agent-suite/agents` |
 | `claude/.claude/skills` | `agent-suite/skills` |
-| `claude/.claude/CLAUDE.md` | `agent-suite/AGENTS.md` |
+| `claude/.claude/CLAUDE.md` | `agent-suite/platforms/claude/CLAUDE.md` |
 | `opencode/.config/opencode/agent` | `agent-suite/platforms/opencode/agent` |
 | `opencode/.config/opencode/commands` | `agent-suite/platforms/opencode/commands` |
 | `opencode/.config/opencode/skills` | `agent-suite/platforms/opencode/skills` |

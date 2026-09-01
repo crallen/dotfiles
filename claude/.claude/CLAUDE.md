@@ -1,1 +1,1 @@
-../../agent-suite/AGENTS.md
+../../agent-suite/platforms/claude/CLAUDE.md

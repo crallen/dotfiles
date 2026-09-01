@@ -37,7 +37,7 @@ SUITE = "agent-suite"
 FIXED: list[tuple[str, str]] = [
     ("claude/.claude/agents",              f"../../{SUITE}/agents"),
     ("claude/.claude/skills",              f"../../{SUITE}/skills"),
-    ("claude/.claude/CLAUDE.md",           f"../../{SUITE}/AGENTS.md"),
+    ("claude/.claude/CLAUDE.md",           f"../../{SUITE}/platforms/claude/CLAUDE.md"),
     ("opencode/.config/opencode/agent",    f"../../../{SUITE}/platforms/opencode/agent"),
     ("opencode/.config/opencode/commands", f"../../../{SUITE}/platforms/opencode/commands"),
     ("opencode/.config/opencode/skills",   f"../../../{SUITE}/platforms/opencode/skills"),

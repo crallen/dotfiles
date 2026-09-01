@@ -7,14 +7,15 @@ Personal dotfiles managed with GNU Stow.
 ```text
 dotfiles/
 ├── .stowrc                 # Stow target config (`~`)
+├── agent-suite/            # Submodule: agents, skills, commands (not a Stow package)
 ├── claude/
-│   └── .claude/            # Claude Code agent suite (agents, skills, CLAUDE.md, settings)
+│   └── .claude/            # Claude Code config; agents/skills/CLAUDE.md link into agent-suite/
 ├── ghostty/
 │   └── .config/ghostty/    # Ghostty terminal config
 ├── neovim/
 │   └── .config/nvim/       # LazyVim-based Neovim config
 ├── opencode/
-│   └── .config/opencode/   # OpenCode agents, skills, commands, and config
+│   └── .config/opencode/   # OpenCode config; agent/skills/commands link into agent-suite/
 ├── starship/
 │   └── .config/starship.toml # Starship prompt config
 └── tmux/
@@ -33,11 +34,17 @@ dotfiles/
 
 ## Install / Apply
 
-From the repo root:
+Clone with the submodule, then stow from the repo root:
 
 ```bash
+git clone --recurse-submodules git@github.com:crallen/dotfiles.git
+# already cloned? git submodule update --init
 stow claude ghostty neovim opencode starship tmux
 ```
+
+`agent-suite/` is a submodule, not a Stow package — it is never stowed directly. The
+`claude` and `opencode` packages symlink into it, so the suite must be checked out
+before stowing or those links dangle.
 
 Because `.stowrc` sets `--target=~`, this will symlink:
 
@@ -75,12 +82,11 @@ Usually no restow is needed if the file is already symlinked. Reload the affecte
 
 ### `claude`
 
-The Claude Code config (`~/.claude/`) — a custom suite of software-engineering agents, skills, and slash commands:
+The Claude Code config (`~/.claude/`):
 
-- `agents/` — specialist subagent definitions (code review, security, testing, debugging, frontend/backend, etc.)
-- `skills/` — reference skills plus user-invocable workflow skills (the `/`-commands)
+- `agents/`, `skills/`, `CLAUDE.md` — symlinks into
+  [agent-suite](https://github.com/crallen/agent-suite); edit them there
 - `output-styles/` — alternate response styles selectable with `/output-style`
-- `CLAUDE.md` — suite overview and tech-lead operating instructions
 - `settings.json` — Claude Code runtime settings
 
 ### `ghostty`
@@ -93,13 +99,11 @@ The Claude Code config (`~/.claude/`) — a custom suite of software-engineering
 
 ### `opencode`
 
-The OpenCode config currently includes:
+The OpenCode config (`~/.config/opencode/`):
 
-- `agent/` — primary and specialist agent definitions
-- `commands/` — slash command routing prompts
-- `skills/` — reusable skill/reference material
+- `agent/`, `commands/`, `skills/`, `AGENTS.md` — symlinks into
+  [agent-suite](https://github.com/crallen/agent-suite); edit them there
 - `themes/` — custom UI themes
-- `AGENTS.md` — suite overview and usage guidance
 - `opencode.json` — runtime config and permissions
 - `tui.json` — UI preferences
 
@@ -114,17 +118,8 @@ The OpenCode config currently includes:
 
 ## Acknowledgments
 
-The Claude Code and OpenCode agent suites draw inspiration from Matt Pocock's
-[skills](https://github.com/mattpocock/skills) repo (MIT) — several skills (`skill-design`,
-`code-review-checklist`, `domain-modeling`, the grill skills, and the wayfinder skills)
-adapt material from it directly.
-
-They also draw on Cursor's [pstack](https://github.com/cursor/plugins/tree/main/pstack)
-skills. The `unslop`, `why`, and `blast-radius` skills, the `coding-guardrails` principle
-references (type-system discipline, idempotency, build-the-lever, encode-lessons-in-structure),
-and the `doc-templates` framework guidance (Diátaxis, Simplified Technical English) are
-independent reimplementations of ideas from it — reworked in our own words, since that repo
-carries no license.
+The agent suite's attribution lives with the suite, in
+[agent-suite](https://github.com/crallen/agent-suite).
 
 ## Notes
 
@@ -134,4 +129,4 @@ carries no license.
 
 ## License
 
-[MIT](LICENSE). Third-party attribution is in [NOTICE](NOTICE).
+[MIT](LICENSE)

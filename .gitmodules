@@ -1,0 +1,3 @@
+[submodule "agent-suite"]
+	path = agent-suite
+	url = git@github.com:crallen/agent-suite.git

@@ -11,7 +11,7 @@ dotfiles/
 ├── scripts/links.py        # Owns the suite symlink manifest; --relink repairs it
 ├── agent-suite/            # Submodule: agents, skills, commands (not a Stow package)
 ├── claude/
-│   └── .claude/            # Claude Code config; agents/skills/CLAUDE.md link into agent-suite/
+│   └── .claude/            # Claude Code config; agents/skills/commands link into agent-suite/
 ├── codex/
 │   └── .codex/             # Codex AGENTS.md + skills; all link into agent-suite/
 ├── ghostty/
@@ -73,7 +73,7 @@ Because `.stowrc` sets `--target=~`, this will symlink:
 
 The Claude Code config (`~/.claude/`):
 
-- `agents/`, `skills/`, `CLAUDE.md` — symlinks into
+- `agents/`, `skills/`, `commands/`, `CLAUDE.md` — symlinks into
   [agent-suite](https://github.com/crallen/agent-suite); edit them there
 - `output-styles/` — alternate response styles selectable with `/output-style`
 - `settings.json` — Claude Code runtime settings
@@ -129,9 +129,9 @@ The agent suite's attribution lives with the suite, in
 - This repo is optimized for my own workflow, so documentation is intentionally practical rather than exhaustive.
 - Editing an already-symlinked file is live — reload the affected app, nothing else.
 - Adding, deleting, or renaming a file in a package needs `stow --restow <package>`.
-- Suite content is the exception: skills reach `claude` and `opencode` through a single
-  whole-directory link, so anything added upstream is already live. `codex` links each
-  skill individually, so a newly shared one needs `make relink`.
+- Suite content is the exception: skills and commands reach `claude` and `opencode`
+  through a single whole-directory link, so anything added upstream is already live.
+  `codex` links each skill individually, so a newly shared one needs `make relink`.
 
 ## License
 

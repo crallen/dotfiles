@@ -12,6 +12,12 @@ ALL      := claude codex ghostty neovim opencode starship tmux
 PACKAGES ?= $(shell cat packages.local 2>/dev/null || echo $(ALL))
 SUITE    := agent-suite
 
+# The packages holding links into the suite. Adding a top-level entry to one of
+# these (a commands/ directory, a codex skill) needs a restow before it reaches
+# ~, because stow links per entry wherever a real directory already sits at the
+# target. Restowing one already stowed is a no-op, so relink covers all three.
+SUITE_PKGS := claude codex opencode
+
 .DEFAULT_GOAL := help
 .PHONY: help install check suite-check relink update status
 
@@ -43,9 +49,13 @@ suite-check:
 	  echo "$(SUITE) is not checked out — run 'make install'"; exit 1; \
 	fi
 
-relink: ## Repair the suite links, then restow codex so they reach ~
+relink: ## Repair the suite links, then restow so they reach ~
 	@scripts/links.py --relink
-	@stow --restow codex && echo "  restowed codex"
+	@for p in $(SUITE_PKGS); do \
+	  case " $(PACKAGES) " in *" $$p "*) ;; *) continue ;; esac; \
+	  if stow --restow "$$p" 2>/dev/null; then echo "  restowed  $$p"; \
+	  else echo "  CONFLICT  $$p — inspect with 'stow -n --restow $$p'"; fi; \
+	done
 
 update: ## Pull the latest agent-suite, relink, and show the pointer to commit
 	@git submodule update --remote --merge $(SUITE)

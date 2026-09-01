@@ -44,6 +44,7 @@ The two harness packages hold symlinks into it rather than real files:
 |---|---|
 | `claude/.claude/agents` | `agent-suite/agents` |
 | `claude/.claude/skills` | `agent-suite/skills` |
+| `claude/.claude/commands` | `agent-suite/platforms/claude/commands` |
 | `claude/.claude/CLAUDE.md` | `agent-suite/platforms/claude/CLAUDE.md` |
 | `opencode/.config/opencode/agent` | `agent-suite/platforms/opencode/agent` |
 | `opencode/.config/opencode/commands` | `agent-suite/platforms/opencode/commands` |
@@ -61,6 +62,11 @@ whole, because `~/.codex/skills` is Codex's own directory: it holds the bundled
 That also means a newly shared skill needs `make relink` before Codex sees it —
 restow alone is not enough, because the package has no link to that skill yet.
 The claude and opencode packages need nothing, their whole directory being one link.
+
+Adding a new top-level entry to one of those packages is the other case: `~/.claude`
+and `~/.config/opencode` are real directories the harness owns, so stow links each
+entry separately and a brand-new one (`commands`, when it was added) does not exist
+under `~` until a restow creates it. `make relink` restows all three for that reason.
 
 **Changes to an agent, skill, or command belong in the submodule**, not here. Follow
 `agent-suite/README.md` for its sync and validation rules; its own CI enforces them.
@@ -88,7 +94,7 @@ and the other harness-local files.
 
 ```sh
 make check    # every suite link resolves, then the suite's own validator
-make relink   # repair the links and restow codex
+make relink   # repair the links and restow claude, codex, opencode
 ```
 
 `make check` covers something neither repo's own tooling can. The suite's

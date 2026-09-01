@@ -1,0 +1,2 @@
+# Which packages this machine stows; see the Makefile.
+packages.local

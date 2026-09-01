@@ -46,9 +46,13 @@ git clone --recurse-submodules git@github.com:crallen/dotfiles.git
 cd dotfiles && make install
 ```
 
-`make install` checks out the submodule and stows every package, reporting any
-whose target already holds a real file. `make help` lists the rest; `make check`
-verifies the suite symlinks and runs the suite's validator.
+`make install` checks out the submodule and stows the packages this machine wants,
+reporting any whose target already holds a real file. `make help` lists the rest;
+`make check` verifies the suite symlinks and runs the suite's validator.
+
+To stow only some packages on a given machine, list them in `packages.local` (one
+per line). It is gitignored — it describes the machine, not the repo — and a
+machine without one gets every package.
 
 `agent-suite/` is a submodule, not a Stow package — it is never stowed directly. The
 `claude` and `opencode` packages symlink into it, so the suite must be checked out

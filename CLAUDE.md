@@ -98,7 +98,14 @@ manifest — the seven whole-directory links plus one per codex skill — and `-
 repairs anything missing, wrong, or stale.
 
 `make status` shows which packages are stowed; `make install` checks out the
-submodule and stows everything; `make update` pulls the latest suite revision.
+submodule and stows them; `make update` pulls the latest suite revision.
+
+**Not every package belongs on every machine.** `make` stows all of them unless a
+`packages.local` file names the subset this machine wants — one name per line,
+gitignored, since it describes the box rather than the repo. A machine with no such
+file gets everything, which is the right default for a fresh Linux box. Prefer that
+file over detecting the OS: what makes a package inapplicable is usually a real
+config already sitting at its target, not the platform.
 
 ## Conventions
 

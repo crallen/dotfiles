@@ -5,7 +5,11 @@
 # its keep — a skill shared to codex upstream needs a matching link here, and the
 # suite's own validator cannot see this repo.
 
-PACKAGES := claude codex ghostty neovim opencode starship tmux
+# Every package in the repo. A machine that wants only some of them writes those
+# names into packages.local (gitignored, one line or one per line); machines with
+# no such file get everything. Override for a single run with `make PACKAGES=...`.
+ALL      := claude codex ghostty neovim opencode starship tmux
+PACKAGES ?= $(shell cat packages.local 2>/dev/null || echo $(ALL))
 SUITE    := agent-suite
 
 .DEFAULT_GOAL := help
@@ -54,8 +58,9 @@ update: ## Pull the latest agent-suite, relink, and show the pointer to commit
 	  echo "Commit it with: git add $(SUITE) && git commit -m 'chore($(SUITE)): bump'"; \
 	fi
 
-status: ## Show which packages are stowed
-	@for p in $(PACKAGES); do \
+status: ## Show which packages are stowed, and which this machine skips
+	@for p in $(ALL); do \
+	  case " $(PACKAGES) " in *" $$p "*) ;; *) printf "  %-10s %s\n" "$$p" "skipped here"; continue ;; esac; \
 	  out=$$(stow -n -v "$$p" 2>&1); \
 	  if echo "$$out" | grep -q 'WARNING! stowing'; then s="conflict"; \
 	  elif echo "$$out" | grep -q '^LINK:'; then s="not stowed"; \

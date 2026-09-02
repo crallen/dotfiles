@@ -42,7 +42,7 @@ The two harness packages hold symlinks into it rather than real files:
 
 | Package path | Submodule target |
 |---|---|
-| `claude/.claude/agents` | `agent-suite/agents` |
+| `claude/.claude/agents` | `agent-suite/platforms/claude/agents` |
 | `claude/.claude/skills` | `agent-suite/skills` |
 | `claude/.claude/commands` | `agent-suite/platforms/claude/commands` |
 | `claude/.claude/CLAUDE.md` | `agent-suite/platforms/claude/CLAUDE.md` |

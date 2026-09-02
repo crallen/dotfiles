@@ -35,7 +35,7 @@ SUITE = "agent-suite"
 
 # Links whose target never changes. Relative, so they resolve on any machine.
 FIXED: list[tuple[str, str]] = [
-    ("claude/.claude/agents",              f"../../{SUITE}/agents"),
+    ("claude/.claude/agents",              f"../../{SUITE}/platforms/claude/agents"),
     ("claude/.claude/skills",              f"../../{SUITE}/skills"),
     ("claude/.claude/commands",            f"../../{SUITE}/platforms/claude/commands"),
     ("claude/.claude/CLAUDE.md",           f"../../{SUITE}/platforms/claude/CLAUDE.md"),

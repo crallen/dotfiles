@@ -18,8 +18,16 @@ SUITE    := agent-suite
 # target. Restowing one already stowed is a no-op, so relink covers all three.
 SUITE_PKGS := claude codex opencode
 
+# Claude's settings.json is gitignored — it records which plugins and marketplaces
+# this machine enables, and a private marketplace path does not belong in a public
+# repo. Stow says nothing when it is absent, so install seeds it from the suite's
+# example rather than leaving ~/.claude/settings.json (and its secret-file deny
+# list) quietly missing.
+SETTINGS      := claude/.claude/settings.json
+SETTINGS_SEED := $(SUITE)/platforms/claude/settings.json.example
+
 .DEFAULT_GOAL := help
-.PHONY: help install check suite-check relink update status
+.PHONY: help install check suite-check seed-settings relink update status
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -27,6 +35,7 @@ help: ## Show this help
 
 install: ## Check out the submodule and stow every package
 	@git submodule update --init --recursive
+	@$(MAKE) --no-print-directory seed-settings
 	@failed=""; for p in $(PACKAGES); do \
 	  if stow "$$p" 2>/dev/null; then echo "  stowed    $$p"; \
 	  else echo "  CONFLICT  $$p"; failed="$$failed $$p"; fi; \
@@ -41,6 +50,15 @@ check: ## Verify every suite link, then run the suite's own validator
 	@scripts/links.py
 	@echo
 	@$(MAKE) --no-print-directory suite-check
+
+seed-settings:
+	@case " $(PACKAGES) " in *" claude "*) ;; *) exit 0 ;; esac; \
+	if [ -f $(SETTINGS) ]; then exit 0; fi; \
+	if [ ! -f $(SETTINGS_SEED) ]; then \
+	  echo "  MISSING   $(SETTINGS_SEED) — is $(SUITE) checked out?"; exit 1; \
+	fi; \
+	cp $(SETTINGS_SEED) $(SETTINGS); \
+	echo "  seeded    $(SETTINGS) from the suite example"
 
 suite-check:
 	@if [ -x $(SUITE)/scripts/validate-config.py ]; then \

@@ -91,14 +91,15 @@ and the other harness-local files.
 `settings.json` is **gitignored** — which plugins and marketplaces a machine enables
 describes the box, not the repo, and a private marketplace path should not land in a
 public one. It is still a real file in the package, so stow links it like any other.
-A fresh checkout has to create it first:
+`make install` seeds it from the suite's example when absent, before it stows:
 
 ```sh
 cp agent-suite/platforms/claude/settings.json.example claude/.claude/settings.json
 ```
 
-Stow says nothing when it is missing; `~/.claude/settings.json` simply never appears,
-and the deny list guarding `.env` files and private keys goes with it.
+That step exists because Stow says nothing when the file is missing —
+`~/.claude/settings.json` simply never appears, and the deny list guarding `.env`
+files and private keys goes with it. Run the copy by hand only outside `make install`.
 
 ## Managing it
 

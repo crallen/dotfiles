@@ -1,2 +1,6 @@
 # Which packages this machine stows; see the Makefile.
 packages.local
+
+# Machine-local: which plugins and marketplaces this machine enables.
+# Bootstrap from agent-suite/platforms/claude/settings.json.example — see its README.
+claude/.claude/settings.json

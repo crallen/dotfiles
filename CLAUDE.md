@@ -88,6 +88,18 @@ On a fresh machine, clone with `--recurse-submodules` (or run `git submodule upd
 Claude Code configuration. Beyond the submodule symlinks above, it holds `settings.json`
 and the other harness-local files.
 
+`settings.json` is **gitignored** — which plugins and marketplaces a machine enables
+describes the box, not the repo, and a private marketplace path should not land in a
+public one. It is still a real file in the package, so stow links it like any other.
+A fresh checkout has to create it first:
+
+```sh
+cp agent-suite/platforms/claude/settings.json.example claude/.claude/settings.json
+```
+
+Stow says nothing when it is missing; `~/.claude/settings.json` simply never appears,
+and the deny list guarding `.env` files and private keys goes with it.
+
 ## Managing it
 
 `make help` lists the targets. The two worth knowing:

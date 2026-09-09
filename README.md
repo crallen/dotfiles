@@ -76,7 +76,11 @@ The Claude Code config (`~/.claude/`):
 - `agents/`, `skills/`, `commands/`, `CLAUDE.md` — symlinks into
   [agent-suite](https://github.com/crallen/agent-suite); edit them there
 - `output-styles/` — alternate response styles selectable with `/output-style`
-- `settings.json` — Claude Code runtime settings
+- `settings.json` — Claude Code runtime settings. **Gitignored and machine-local**;
+  bootstrap a new machine with
+  `cp agent-suite/platforms/claude/settings.json.example claude/.claude/settings.json`
+  before stowing, or Stow leaves `~/.claude/settings.json` absent and the
+  secret-file deny list goes with it
 
 ### `codex`
 

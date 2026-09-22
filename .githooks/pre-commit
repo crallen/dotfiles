@@ -1,0 +1,5 @@
+#!/bin/sh
+# Run make check when a commit touches a suite package or the submodule pointer.
+if git diff --cached --name-only | grep -qE '^(claude|codex|opencode)/|^agent-suite$'; then
+  exec make check -s
+fi

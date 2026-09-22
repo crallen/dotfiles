@@ -117,8 +117,16 @@ because the `codex` package has no matching link. `scripts/links.py` owns that
 manifest — the seven whole-directory links plus one per codex skill — and `--relink`
 repairs anything missing, wrong, or stale.
 
+`make check` also verifies `claude/.claude/settings.json` exists and carries every
+deny rule from the suite's example, and warns when `core.hooksPath` is unset.
+`make hooks` points both repos at their tracked `.githooks/`; `make install` does it
+for you. The dotfiles hook runs `make check` on commits touching a suite package or
+the submodule pointer; the suite's own hook runs its validator. Both need `uv`, the
+validator's one prerequisite.
+
 `make status` shows which packages are stowed; `make install` checks out the
-submodule and stows them; `make update` pulls the latest suite revision.
+submodule, seeds settings, wires hooks, and stows them; `make update` pulls the
+latest suite revision.
 
 **Not every package belongs on every machine.** `make` stows all of them unless a
 `packages.local` file names the subset this machine wants — one name per line,

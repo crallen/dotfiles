@@ -27,15 +27,16 @@ SETTINGS      := claude/.claude/settings.json
 SETTINGS_SEED := $(SUITE)/platforms/claude/settings.json.example
 
 .DEFAULT_GOAL := help
-.PHONY: help install check suite-check seed-settings relink update status
+.PHONY: help install check suite-check seed-settings hooks relink update status
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
 	  | awk -F':.*?## ' '{printf "  \033[36m%-8s\033[0m %s\n", $$1, $$2}'
 
-install: ## Check out the submodule and stow every package
+install: ## Check out the submodule, seed settings, wire hooks, and stow every package
 	@git submodule update --init --recursive
 	@$(MAKE) --no-print-directory seed-settings
+	@$(MAKE) --no-print-directory hooks
 	@failed=""; for p in $(PACKAGES); do \
 	  if stow "$$p" 2>/dev/null; then echo "  stowed    $$p"; \
 	  else echo "  CONFLICT  $$p"; failed="$$failed $$p"; fi; \
@@ -46,12 +47,14 @@ install: ## Check out the submodule and stow every package
 	  exit 1; \
 	fi
 
-check: ## Verify every suite link, then run the suite's own validator
+check: ## Verify every suite link and settings.json, then run the suite's own validator
 	@scripts/links.py
+	@if [ "$$(git config core.hooksPath)" != ".githooks" ]; then \
+	  echo "  warn  core.hooksPath is not .githooks — run 'make hooks'"; fi
 	@echo
 	@$(MAKE) --no-print-directory suite-check
 
-seed-settings:
+seed-settings: ## Copy the suite's settings example into place when none exists
 	@case " $(PACKAGES) " in *" claude "*) ;; *) exit 0 ;; esac; \
 	if [ -f $(SETTINGS) ]; then exit 0; fi; \
 	if [ ! -f $(SETTINGS_SEED) ]; then \
@@ -60,7 +63,14 @@ seed-settings:
 	cp $(SETTINGS_SEED) $(SETTINGS); \
 	echo "  seeded    $(SETTINGS) from the suite example"
 
+hooks: ## Point both repos at their tracked .githooks directories
+	@git config core.hooksPath .githooks && echo "  hooks     dotfiles -> .githooks"
+	@git -C $(SUITE) config core.hooksPath .githooks && echo "  hooks     $(SUITE) -> .githooks"
+
 suite-check:
+	@if ! command -v uv >/dev/null 2>&1; then \
+	  echo "uv is required to run the suite validator: https://docs.astral.sh/uv/"; exit 1; \
+	fi
 	@if [ -x $(SUITE)/scripts/validate-config.py ]; then \
 	  cd $(SUITE) && scripts/validate-config.py -q; \
 	else \

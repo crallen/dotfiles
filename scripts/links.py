@@ -19,6 +19,7 @@ matching link here, and the suite's own validator cannot see this repo.
 
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
@@ -45,6 +46,9 @@ FIXED: list[tuple[str, str]] = [
     ("opencode/.config/opencode/AGENTS.md", f"../../../{SUITE}/platforms/opencode/AGENTS.md"),
     ("codex/.codex/AGENTS.md",             f"../../{SUITE}/platforms/codex/AGENTS.md"),
 ]
+
+SETTINGS = "claude/.claude/settings.json"
+SETTINGS_SEED = f"{SUITE}/platforms/claude/settings.json.example"
 
 CODEX_PKG = "codex/.codex/skills"
 CODEX_SRC = f"{SUITE}/platforms/codex/skills"
@@ -133,6 +137,34 @@ def check_live(quiet: bool, codex_probe: str | None) -> None:
             print(f"  ok    {pkg:<10} ~/{path.relative_to(home)} -> {target.relative_to(ROOT)}")
 
 
+def check_settings(quiet: bool) -> None:
+    """The gitignored settings file exists and carries every deny rule the example has.
+
+    Stow says nothing when the file is missing, and the deny list guarding .env
+    files and private keys goes missing with it. Other keys are machine-local by
+    design and are not compared.
+    """
+    if not (Path.home() / ".claude/skills").exists():
+        if not quiet:
+            print("  --    settings   claude not stowed")
+        return
+    live, seed = ROOT / SETTINGS, ROOT / SETTINGS_SEED
+    if not live.is_file():
+        fail(f"{SETTINGS} is missing — run 'make seed-settings'")
+        return
+    try:
+        live_deny = set(json.loads(live.read_text()).get("permissions", {}).get("deny", []))
+        seed_deny = set(json.loads(seed.read_text()).get("permissions", {}).get("deny", []))
+    except (json.JSONDecodeError, OSError) as e:
+        fail(f"could not read settings: {e}")
+        return
+    missing = sorted(seed_deny - live_deny)
+    for rule in missing:
+        fail(f"{SETTINGS}: deny rule {rule!r} from the suite example is absent")
+    if not missing and not quiet:
+        print(f"  ok    settings   {SETTINGS} carries all {len(seed_deny)} example deny rules")
+
+
 def main() -> int:
     relink = "--relink" in sys.argv
     quiet = "-q" in sys.argv or "--quiet" in sys.argv
@@ -170,6 +202,7 @@ def main() -> int:
     print()
     codex_names = [Path(rel).name for rel, _ in expected if rel.startswith(CODEX_PKG)]
     check_live(quiet, codex_names[0] if codex_names else None)
+    check_settings(quiet)
 
     if problems:
         print("\nproblems:")

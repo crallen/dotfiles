@@ -167,7 +167,7 @@ Run from a clean env (`env -i HOME=$HOME TERM=$TERM zsh …`) unless noted.
   `~/.opencode/bin`, then source `~/.zshenv.local` if present.
 - [ ] 2. Create `zsh/.zshrc` with sections 1–10 in the order listed under Components,
   including `_load_secrets` and first-existing-path plugin lookup.
-- [ ] 3. Create `zsh/.zsh_secrets.example` (fully commented, with header) and
+- [x] 3. Create `zsh/.zsh_secrets.example` (fully commented, with header) and
   `zsh/.stow-local-ignore` excluding the example and itself.
 - [ ] 4. Update `Makefile`: add `zsh` to `ALL`; add `seed-secrets` (gated on `zsh` in
   `PACKAGES`, `umask 077`, copy only when absent); call it from `install` after

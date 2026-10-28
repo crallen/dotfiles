@@ -4,3 +4,8 @@ packages.local
 # Machine-local: which plugins and marketplaces this machine enables.
 # Bootstrap from agent-suite/platforms/claude/settings.json.example — see its README.
 claude/.claude/settings.json
+
+# zsh secrets and machine-local overrides belong only in ~; guard against creating them in the package.
+.zsh_secrets
+.zshrc.local
+.zshenv.local

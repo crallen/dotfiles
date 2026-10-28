@@ -169,7 +169,7 @@ Run from a clean env (`env -i HOME=$HOME TERM=$TERM zsh …`) unless noted.
   including `_load_secrets` and first-existing-path plugin lookup.
 - [x] 3. Create `zsh/.zsh_secrets.example` (fully commented, with header) and
   `zsh/.stow-local-ignore` excluding the example and itself.
-- [ ] 4. Update `Makefile`: add `zsh` to `ALL`; add `seed-secrets` (gated on `zsh` in
+- [x] 4. Update `Makefile`: add `zsh` to `ALL`; add `seed-secrets` (gated on `zsh` in
   `PACKAGES`, `umask 077`, copy only when absent); call it from `install` after
   `seed-settings`. (blocked by 3)
 - [x] 5. Update `.gitignore` with `.zsh_secrets`, `.zshrc.local`, `.zshenv.local`.

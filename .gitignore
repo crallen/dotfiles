@@ -9,3 +9,6 @@ claude/.claude/settings.json
 .zsh_secrets
 .zshrc.local
 .zshenv.local
+
+# Project-local agent state (agent memory, worktrees).
+.claude/

@@ -176,7 +176,7 @@ Run from a clean env (`env -i HOME=$HOME TERM=$TERM zsh …`) unless noted.
 - [x] 6. Update `README.md` (layout tree, symlink list, Requirements, `zsh` section with
   secrets workflow, exposure caveat, compdump note, Arch and Debian/Ubuntu package lines)
   and the package table in `CLAUDE.md`. (blocked by 1, 2, 3, 4)
-- [ ] 7. Migrate this machine: move `~/.zshrc` and `~/.zshenv` to `*.pre-stow`; write
+- [x] 7. Migrate this machine: move `~/.zshrc` and `~/.zshenv` to `*.pre-stow`; write
   `~/.zshrc.local` with nvm load and bun completion; add `zsh` to `packages.local`; run
   `make install`; run Testing 1–9. (blocked by 1, 2, 4)
 - [x] 8. agent-suite: add `Read(~/.zsh_secrets)` to

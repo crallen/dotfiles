@@ -18,6 +18,8 @@ symlinks its contents into `~`.
 | `opencode/.config/opencode/*` | `~/.config/opencode/*` |
 | `starship/.config/starship.toml` | `~/.config/starship.toml` |
 | `tmux/.tmux.conf` | `~/.tmux.conf` |
+| `zsh/.zshenv` | `~/.zshenv` |
+| `zsh/.zshrc` | `~/.zshrc` |
 
 So a file at `<package>/<path>` is what lives at `~/<path>` once stowed. To add a new
 config file, place it inside the matching package at the path it should occupy under `~`.
@@ -141,5 +143,6 @@ config already sitting at its target, not the platform.
   `feat(claude): ...`, `chore(tmux): ...`). Repo-root files like this one and `README.md`
   use a descriptive scope such as `readme`, not a package scope.
 - A submodule pointer bump uses the scope `agent-suite`.
-- Never read or commit secret-bearing files (`.env`, keys, credentials).
+- Never read or commit secret-bearing files (`.env`, keys, credentials, `~/.zsh_secrets`).
+  `zsh/.zsh_secrets.example` holds placeholders only.
 - Keep `README.md` in sync when adding, removing, or renaming a package.

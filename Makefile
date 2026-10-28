@@ -8,7 +8,7 @@
 # Every package in the repo. A machine that wants only some of them writes those
 # names into packages.local (gitignored, one line or one per line); machines with
 # no such file get everything. Override for a single run with `make PACKAGES=...`.
-ALL      := claude codex ghostty neovim opencode starship tmux
+ALL      := claude codex ghostty neovim opencode starship tmux zsh
 PACKAGES ?= $(shell cat packages.local 2>/dev/null || echo $(ALL))
 SUITE    := agent-suite
 
@@ -26,16 +26,23 @@ SUITE_PKGS := claude codex opencode
 SETTINGS      := claude/.claude/settings.json
 SETTINGS_SEED := $(SUITE)/platforms/claude/settings.json.example
 
+# ~/.zsh_secrets holds credentials, so it lives only in ~ and never in the repo.
+# Install seeds it from the commented example under umask 077, giving mode 600 —
+# .zshrc refuses to source it any wider — and never touches one already there.
+SECRETS      := $(HOME)/.zsh_secrets
+SECRETS_SEED := zsh/.zsh_secrets.example
+
 .DEFAULT_GOAL := help
-.PHONY: help install check suite-check seed-settings hooks relink update status
+.PHONY: help install check suite-check seed-settings seed-secrets hooks relink update status
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
 	  | awk -F':.*?## ' '{printf "  \033[36m%-8s\033[0m %s\n", $$1, $$2}'
 
-install: ## Check out the submodule, seed settings, wire hooks, and stow every package
+install: ## Check out the submodule, seed settings and secrets, wire hooks, and stow every package
 	@git submodule update --init --recursive
 	@$(MAKE) --no-print-directory seed-settings
+	@$(MAKE) --no-print-directory seed-secrets
 	@$(MAKE) --no-print-directory hooks
 	@failed=""; for p in $(PACKAGES); do \
 	  if stow "$$p" 2>/dev/null; then echo "  stowed    $$p"; \
@@ -62,6 +69,12 @@ seed-settings: ## Copy the suite's settings example into place when none exists
 	fi; \
 	cp $(SETTINGS_SEED) $(SETTINGS); \
 	echo "  seeded    $(SETTINGS) from the suite example"
+
+seed-secrets: ## Copy the zsh secrets example to ~/.zsh_secrets (mode 600) when none exists
+	@case " $(PACKAGES) " in *" zsh "*) ;; *) exit 0 ;; esac; \
+	if [ -e "$(SECRETS)" ]; then exit 0; fi; \
+	umask 077; cp $(SECRETS_SEED) "$(SECRETS)" && \
+	echo "  seeded    $(SECRETS) from $(SECRETS_SEED)"
 
 hooks: ## Point both repos at their tracked .githooks directories
 	@git config core.hooksPath .githooks && echo "  hooks     dotfiles -> .githooks"

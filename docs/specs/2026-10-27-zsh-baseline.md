@@ -173,7 +173,7 @@ Run from a clean env (`env -i HOME=$HOME TERM=$TERM zsh …`) unless noted.
   `PACKAGES`, `umask 077`, copy only when absent); call it from `install` after
   `seed-settings`. (blocked by 3)
 - [x] 5. Update `.gitignore` with `.zsh_secrets`, `.zshrc.local`, `.zshenv.local`.
-- [ ] 6. Update `README.md` (layout tree, symlink list, Requirements, `zsh` section with
+- [x] 6. Update `README.md` (layout tree, symlink list, Requirements, `zsh` section with
   secrets workflow, exposure caveat, compdump note, Arch and Debian/Ubuntu package lines)
   and the package table in `CLAUDE.md`. (blocked by 1, 2, 3, 4)
 - [ ] 7. Migrate this machine: move `~/.zshrc` and `~/.zshenv` to `*.pre-stow`; write

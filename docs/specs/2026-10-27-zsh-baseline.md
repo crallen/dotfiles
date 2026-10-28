@@ -165,7 +165,7 @@ Run from a clean env (`env -i HOME=$HOME TERM=$TERM zsh …`) unless noted.
 - [x] 1. Create `zsh/.zshenv` per Components: `LANG`, `EDITOR`/`VISUAL=nvim`,
   `BUN_INSTALL`, deduped `path` prepending only existing `~/.local/bin`, `~/.bun/bin`,
   `~/.opencode/bin`, then source `~/.zshenv.local` if present.
-- [ ] 2. Create `zsh/.zshrc` with sections 1–10 in the order listed under Components,
+- [x] 2. Create `zsh/.zshrc` with sections 1–10 in the order listed under Components,
   including `_load_secrets` and first-existing-path plugin lookup.
 - [x] 3. Create `zsh/.zsh_secrets.example` (fully commented, with header) and
   `zsh/.stow-local-ignore` excluding the example and itself.

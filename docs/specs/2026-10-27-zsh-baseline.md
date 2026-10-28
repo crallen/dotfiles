@@ -162,7 +162,7 @@ Run from a clean env (`env -i HOME=$HOME TERM=$TERM zsh …`) unless noted.
 
 ## Task Checklist
 
-- [ ] 1. Create `zsh/.zshenv` per Components: `LANG`, `EDITOR`/`VISUAL=nvim`,
+- [x] 1. Create `zsh/.zshenv` per Components: `LANG`, `EDITOR`/`VISUAL=nvim`,
   `BUN_INSTALL`, deduped `path` prepending only existing `~/.local/bin`, `~/.bun/bin`,
   `~/.opencode/bin`, then source `~/.zshenv.local` if present.
 - [ ] 2. Create `zsh/.zshrc` with sections 1–10 in the order listed under Components,
@@ -172,14 +172,14 @@ Run from a clean env (`env -i HOME=$HOME TERM=$TERM zsh …`) unless noted.
 - [ ] 4. Update `Makefile`: add `zsh` to `ALL`; add `seed-secrets` (gated on `zsh` in
   `PACKAGES`, `umask 077`, copy only when absent); call it from `install` after
   `seed-settings`. (blocked by 3)
-- [ ] 5. Update `.gitignore` with `.zsh_secrets`, `.zshrc.local`, `.zshenv.local`.
+- [x] 5. Update `.gitignore` with `.zsh_secrets`, `.zshrc.local`, `.zshenv.local`.
 - [ ] 6. Update `README.md` (layout tree, symlink list, Requirements, `zsh` section with
   secrets workflow, exposure caveat, compdump note, Arch and Debian/Ubuntu package lines)
   and the package table in `CLAUDE.md`. (blocked by 1, 2, 3, 4)
 - [ ] 7. Migrate this machine: move `~/.zshrc` and `~/.zshenv` to `*.pre-stow`; write
   `~/.zshrc.local` with nvm load and bun completion; add `zsh` to `packages.local`; run
   `make install`; run Testing 1–9. (blocked by 1, 2, 4)
-- [ ] 8. agent-suite: add `Read(~/.zsh_secrets)` to
+- [x] 8. agent-suite: add `Read(~/.zsh_secrets)` to
   `platforms/claude/settings.json.example`'s deny list and run its validator; add the
   same rule to `claude/.claude/settings.json`; commit and push the suite, then bump the
   pointer.

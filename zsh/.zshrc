@@ -23,11 +23,13 @@ if [[ -n ${_zcompdump}(#qN.mh-24) ]]; then
   compinit -C -d $_zcompdump
 else
   compinit -d $_zcompdump
+  touch $_zcompdump  # compinit leaves an unchanged dump untouched; restart the 24h clock
 fi
 unset _zcompdump
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+[[ -z $LS_COLORS ]] && (( $+commands[dircolors] )) && eval "$(dircolors -b)"
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # ===========================================================================
@@ -39,8 +41,22 @@ autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 
-zmodload zsh/terminfo
+# Fixed codes cover normal and application keypad modes, so bindings work even
+# when $TERM has no terminfo entry (Ghostty over SSH); terminfo adds any extras.
 typeset -A _keys=(
+  '^[[A' up-line-or-beginning-search    '^[OA' up-line-or-beginning-search
+  '^[[B' down-line-or-beginning-search  '^[OB' down-line-or-beginning-search
+  '^[[H' beginning-of-line  '^[OH' beginning-of-line  '^[[1~' beginning-of-line
+  '^[[F' end-of-line        '^[OF' end-of-line        '^[[4~' end-of-line
+  '^[[3~' delete-char
+  '^[[1;5D' backward-word   '^[[1;5C' forward-word
+)
+for _seq _widget in ${(kv)_keys}; do
+  bindkey -- $_seq $_widget
+done
+
+zmodload zsh/terminfo
+_keys=(
   kcuu1 up-line-or-beginning-search
   kcud1 down-line-or-beginning-search
   khome beginning-of-line
@@ -52,17 +68,7 @@ typeset -A _keys=(
 for _cap _widget in ${(kv)_keys}; do
   [[ -n ${terminfo[$_cap]} ]] && bindkey -- ${terminfo[$_cap]} $_widget
 done
-unset _keys _cap _widget
-
-# terminfo key codes are only sent in application mode, so enable it while
-# the line editor is active.
-if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
-  autoload -Uz add-zle-hook-widget
-  _keypad_on()  { echoti smkx; }
-  _keypad_off() { echoti rmkx; }
-  add-zle-hook-widget zle-line-init _keypad_on
-  add-zle-hook-widget zle-line-finish _keypad_off
-fi
+unset _keys _seq _cap _widget
 
 # ===========================================================================
 # Aliases
@@ -89,13 +95,15 @@ _source_first \
 
 if (( $+commands[fzf] )); then
   autoload -Uz is-at-least
-  if is-at-least 0.48 ${${(z)"$(fzf --version)"}[1]}; then
+  _fzf_version=${$(fzf --version 2>/dev/null)%% *}
+  if [[ -n $_fzf_version ]] && is-at-least 0.48 $_fzf_version; then
     source <(fzf --zsh)
   else
     _source_first \
       /usr/share/fzf/key-bindings.zsh \
       /usr/share/doc/fzf/examples/key-bindings.zsh
   fi
+  unset _fzf_version
 fi
 
 # ===========================================================================

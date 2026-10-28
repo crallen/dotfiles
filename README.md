@@ -155,8 +155,9 @@ there, not in the baseline. Both are gitignored so they never land in the packag
 the `zsh` package is selected and the file does not exist yet. `.zshrc` sources it only
 when it is a regular file you own with no group or other permission bits; otherwise it
 prints a warning asking for `chmod 600` and skips it. Only interactive shells load it, so
-scripts and `zsh -c` never see these values. Every value it exports still reaches every
-child process of an interactive shell, agent-spawned shells included. Keep high-value,
+shells with no interactive ancestor (cron, systemd, `ssh host cmd`) never see these
+values. Every value it exports still reaches every child process of an interactive
+shell, scripts and agent-spawned shells included. Keep high-value,
 project-scoped tokens in a gitignored `.envrc` or a password manager instead.
 
 **Completions.** `compinit` reuses its dump at `~/.cache/zsh/zcompdump` (under
@@ -169,7 +170,8 @@ report a conflict for `zsh`. Move them aside and carry the machine-specific part
 the `.local` files:
 
 ```bash
-mv ~/.zshrc ~/.zshrc.pre-stow && mv ~/.zshenv ~/.zshenv.pre-stow
+[ -e ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.pre-stow
+[ -e ~/.zshenv ] && mv ~/.zshenv ~/.zshenv.pre-stow
 make install
 ```
 

@@ -73,7 +73,7 @@ seed-settings: ## Copy the suite's settings example into place when none exists
 seed-secrets: ## Copy the zsh secrets example to ~/.zsh_secrets (mode 600) when none exists
 	@case " $(PACKAGES) " in *" zsh "*) ;; *) exit 0 ;; esac; \
 	if [ -e "$(SECRETS)" ]; then exit 0; fi; \
-	umask 077; cp $(SECRETS_SEED) "$(SECRETS)"; \
+	umask 077; cp $(SECRETS_SEED) "$(SECRETS)" && \
 	echo "  seeded    $(SECRETS) from $(SECRETS_SEED)"
 
 hooks: ## Point both repos at their tracked .githooks directories

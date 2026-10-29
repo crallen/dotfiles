@@ -6,9 +6,10 @@ export EDITOR=nvim
 export VISUAL=nvim
 export BUN_INSTALL=~/.bun
 
-# PATH: prepend user dirs that exist, deduplicated
+# PATH: prepend user dirs that exist, plus the newest installed nvm node, deduplicated
 typeset -U path
-path=(~/.local/bin(N/) ~/.bun/bin(N/) ~/.opencode/bin(N/) $path)
+path=(~/.local/bin(N/) ~/.bun/bin(N/) ~/.opencode/bin(N/)
+  ~/.nvm/versions/node/v*/bin(/nOn[1]N) $path)
 
 # Per-machine overrides
 [[ -r ~/.zshenv.local ]] && source ~/.zshenv.local

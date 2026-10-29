@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+# Startup script for the T3 Code server (github.com/pingdotgg/t3code), run by the
+# t3-serve.service systemd user unit.
+#
+# No PATH setup here. zsh reads ~/.zshenv for every invocation, scripts included,
+# so this inherits the baseline PATH (the newest nvm node, ~/.local/bin for the
+# agent CLIs) plus whatever ~/.zshenv.local adds. A machine that needs a different
+# node names it in ~/.zshenv.local.
+
+# `serve` is the headless entrypoint: no browser, prints pairing details on start.
+# It binds loopback only, so the port is never exposed on the network; reach it
+# through an SSH tunnel or a local reverse proxy. t3@latest re-resolves from the
+# registry on every start, so the unit waits for network-online.target and retries
+# on failure.
+exec npx --yes t3@latest serve --host 127.0.0.1 --port 3773 "$@"

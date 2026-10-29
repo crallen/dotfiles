@@ -73,7 +73,7 @@ re-resolving on each start), and remote access (laptop via SSH; phone via
 
 ### `zsh/.zshenv` (baseline)
 
-Add `~/.nvm/versions/node/v*(/nOn[1])/bin(N)` to the existing `path=(...)` line, after
+Add `~/.nvm/versions/node/v*/bin(/nOn[1]N)` to the existing `path=(...)` line, after
 `~/.opencode/bin`. Gives every shell, non-interactive ones and the service included,
 the newest installed nvm node; matches nothing on a machine without nvm. Update the
 README `zsh` section: the node bin dir comes from the baseline; only `nvm.sh` loading
@@ -136,5 +136,5 @@ script. Lands as a Forgejo PR.
 - [ ] 6. `homelab-services`: delete the three files, cut `t3code/README.md` to this
   host's access and auth content with a pointer to dotfiles, open a Forgejo PR.
   (blocked by 5)
-- [ ] 7. `zsh/.zshenv`: add `~/.nvm/versions/node/v*(/nOn[1])/bin(N)` to the `path=(...)`
+- [x] 7. `zsh/.zshenv`: add `~/.nvm/versions/node/v*/bin(/nOn[1]N)` to the `path=(...)`
   line after `~/.opencode/bin`.

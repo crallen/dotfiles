@@ -133,7 +133,7 @@ script. Lands as a Forgejo PR.
   the `~/.config/systemd/user/t3-serve.service` symlink into `homelab-services`; add
   `t3code` to `packages.local`; run `make install`; run Testing 3 and 6; hand the
   restart to the user. (blocked by 1, 2, 3, 7)
-- [ ] 6. `homelab-services`: delete the three files, cut `t3code/README.md` to this
+- [x] 6. `homelab-services`: delete the three files, cut `t3code/README.md` to this
   host's access and auth content with a pointer to dotfiles, open a Forgejo PR.
   (blocked by 5)
 - [x] 7. `zsh/.zshenv`: add `~/.nvm/versions/node/v*/bin(/nOn[1]N)` to the `path=(...)`

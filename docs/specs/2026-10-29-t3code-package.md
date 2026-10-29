@@ -125,7 +125,7 @@ script. Lands as a Forgejo PR.
   `npx --yes t3@latest serve --host 127.0.0.1 --port 3773 "$@"`.
 - [x] 2. Create `t3code/.config/systemd/user/t3-serve.service`: the current unit with
   `ExecStart=%h/.local/bin/t3-serve`.
-- [ ] 3. `Makefile`: add `t3code` to `ALL`; add gated `t3-enable` (daemon-reload,
+- [x] 3. `Makefile`: add `t3code` to `ALL`; add gated `t3-enable` (daemon-reload,
   `enable --now`, linger warning); call it from `install` after the stow loop.
 - [ ] 4. Update `README.md` (layout, symlink list, requirements, `t3code` section, and
   the `zsh` section's nvm note) and the `CLAUDE.md` package table. (blocked by 1, 2, 3, 7)

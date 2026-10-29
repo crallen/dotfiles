@@ -123,7 +123,7 @@ script. Lands as a Forgejo PR.
 
 - [ ] 1. Create `t3code/.local/bin/t3-serve`: executable zsh script that execs
   `npx --yes t3@latest serve --host 127.0.0.1 --port 3773 "$@"`.
-- [ ] 2. Create `t3code/.config/systemd/user/t3-serve.service`: the current unit with
+- [x] 2. Create `t3code/.config/systemd/user/t3-serve.service`: the current unit with
   `ExecStart=%h/.local/bin/t3-serve`.
 - [ ] 3. `Makefile`: add `t3code` to `ALL`; add gated `t3-enable` (daemon-reload,
   `enable --now`, linger warning); call it from `install` after the stow loop.

@@ -127,7 +127,7 @@ script. Lands as a Forgejo PR.
   `ExecStart=%h/.local/bin/t3-serve`.
 - [x] 3. `Makefile`: add `t3code` to `ALL`; add gated `t3-enable` (daemon-reload,
   `enable --now`, linger warning); call it from `install` after the stow loop.
-- [ ] 4. Update `README.md` (layout, symlink list, requirements, `t3code` section, and
+- [x] 4. Update `README.md` (layout, symlink list, requirements, `t3code` section, and
   the `zsh` section's nvm note) and the `CLAUDE.md` package table. (blocked by 1, 2, 3, 7)
 - [x] 5. Migrate this machine: remove
   the `~/.config/systemd/user/t3-serve.service` symlink into `homelab-services`; add

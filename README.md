@@ -22,6 +22,9 @@ dotfiles/
 │   └── .config/opencode/   # OpenCode config; agent/skills/commands link into agent-suite/
 ├── starship/
 │   └── .config/starship.toml # Starship prompt config
+├── t3code/
+│   ├── .local/bin/t3-serve # Start script for the T3 Code server
+│   └── .config/systemd/user/t3-serve.service # systemd user unit that runs it
 ├── tmux/
 │   └── .tmux.conf          # tmux config
 └── zsh/
@@ -39,6 +42,9 @@ dotfiles/
 - OpenCode (for the `opencode` package)
 - Neovim (for the `neovim` package)
 - Ghostty (for the `ghostty` package)
+- For the `t3code` package: node and npx, from nvm or anywhere else on PATH; the
+  agent CLIs (`claude`, `codex`) in `~/.local/bin`; a systemd user session. The
+  `zsh` package supplies the PATH the start script reads
 - tmux (for the `tmux` package)
 - zsh (for the `zsh` package); optionally fzf, zsh-autosuggestions, and
   zsh-syntax-highlighting, which it loads when installed
@@ -54,7 +60,8 @@ cd dotfiles && make install
 
 `make install` checks out the submodule, seeds `claude/.claude/settings.json` and
 `~/.zsh_secrets` from their examples when absent, and stows the packages this machine
-wants, reporting any whose target already holds a real file. `make help` lists the rest;
+wants, reporting any whose target already holds a real file. When `t3code` is among
+them, it then enables and starts the `t3-serve` user service. `make help` lists the rest;
 `make check` verifies the suite symlinks and runs the suite's validator.
 
 To stow only some packages on a given machine, list them in `packages.local` (one
@@ -72,6 +79,8 @@ Because `.stowrc` sets `--target=~`, this will symlink:
 - `neovim/.config/nvim/*` → `~/.config/nvim/*`
 - `opencode/.config/opencode/*` → `~/.config/opencode/*`
 - `starship/.config/starship.toml` → `~/.config/starship.toml`
+- `t3code/.local/bin/t3-serve` → `~/.local/bin/t3-serve`
+- `t3code/.config/systemd/user/t3-serve.service` → `~/.config/systemd/user/t3-serve.service`
 - `tmux/.tmux.conf` → `~/.tmux.conf`
 - `zsh/.zshenv`, `zsh/.zshrc` → `~/.zshenv`, `~/.zshrc`
 
@@ -125,6 +134,75 @@ The OpenCode config (`~/.config/opencode/`):
 - minimal prompt config showing directory + git info
 - cloud-profile modules disabled by default (`aws`, `gcloud`, `azure`)
 
+### `t3code`
+
+Runs the [T3 Code](https://github.com/pingdotgg/t3code) server as a systemd user
+service:
+
+- `.local/bin/t3-serve` — zsh start script that runs
+  `npx --yes t3@latest serve --host 127.0.0.1 --port 3773`. The server binds loopback
+  only; the remote-access options below are the only ways off the machine
+- `.config/systemd/user/t3-serve.service` — the unit that runs the script. A user
+  unit cannot wait for the system's `network-online.target`, so a start before the
+  network is up fails and the unit retries every 5 seconds
+
+**PATH.** The script sets no PATH of its own. It is a zsh script, so zsh reads
+`~/.zshenv` before running it. The baseline puts `~/.local/bin` (where `claude` and
+`codex` live) and the newest installed nvm node on PATH; when an nvm node is already
+on PATH, such as after `nvm use` in a parent shell, that one is kept. A machine that needs a
+different node prepends it in `~/.zshenv.local`:
+
+```zsh
+path=(~/.nvm/versions/node/v22.22.2/bin $path)
+```
+
+With no node on PATH, `npx` is not found and the unit fails and retries every 5
+seconds. Secrets never reach the server, because zsh reads `.zshrc` only for
+interactive shells.
+
+On a machine without a systemd user session (macOS, a container), leave `t3code`
+out of `packages.local`: `make install` would stow it and then fail to enable it.
+
+**Linger.** A user service stops at logout unless linger is on:
+
+```bash
+sudo loginctl enable-linger "$USER"
+```
+
+**Install.** After stowing, `make install` runs `systemctl --user daemon-reload` and
+`systemctl --user enable --now t3-serve.service`, then warns if linger is off. It
+starts a stopped server but never restarts a running one, so edits to the script or
+unit take effect on the next restart.
+
+**Operations.**
+
+```bash
+systemctl --user restart t3-serve     # also picks up a new t3 release
+systemctl --user status t3-serve
+journalctl --user -u t3-serve -f      # follow logs
+```
+
+The script runs `t3@latest`, so every start resolves the newest release from npm.
+
+**First stow.** A machine that already has `~/.config/systemd/user/t3-serve.service`,
+such as a symlink from an earlier install, makes `make install` report a conflict for
+`t3code`. Remove it first:
+
+```bash
+rm ~/.config/systemd/user/t3-serve.service
+make install
+```
+
+**Remote access.** The T3 Code app on a laptop connects over SSH and attaches to the
+running server on port 3773. A phone or browser needs one of these:
+
+- Tailscale: `npx t3@latest pair --tailscale` publishes the server over Tailscale
+  Serve on the tailnet and pairs the device against that origin
+- T3 Connect: `npx t3@latest connect login --headless` authorizes the host against
+  your account, then `npx t3@latest connect link` exposes it through the T3 relay.
+  `npx t3@latest connect publish` turns on push notifications, which `connect link`
+  alone does not
+
 ### `tmux`
 
 - terminal multiplexer config (`~/.tmux.conf`)
@@ -135,7 +213,8 @@ The zsh config, split by which shells read it:
 
 - `.zshenv` — read by every zsh process, scripts included, so it holds only cheap
   environment: `LANG`, `EDITOR`/`VISUAL` (nvim), `BUN_INSTALL`, and a deduplicated
-  PATH that prepends `~/.local/bin`, `~/.bun/bin`, and `~/.opencode/bin` when they exist
+  PATH that prepends `~/.local/bin`, `~/.bun/bin`, and `~/.opencode/bin` when they
+  exist, plus the bin directory of the newest node installed under `~/.nvm`
 - `.zshrc` — interactive shells only: options, a 100k-entry shared history in
   `~/.zsh_history`, completion, emacs key bindings, `ls`/`ll`/`grep` aliases, the
   plugins, secrets, and the starship prompt (a plain `%~ %#` prompt without it)
@@ -148,8 +227,10 @@ skipped silently when not. fzf 0.48 or newer uses `fzf --zsh`; older versions, s
 the ones some distros package, fall back to the packaged `key-bindings.zsh`.
 
 Machine-specific config goes in `~/.zshenv.local` and `~/.zshrc.local`, sourced last by
-the matching file when present. Things like nvm, `NODE_OPTIONS`, or flyctl's PATH belong
-there, not in the baseline. Both are gitignored so they never land in the package.
+the matching file when present. Things like `NODE_OPTIONS` or flyctl's PATH belong
+there, not in the baseline. The newest nvm node is on PATH from the baseline already,
+so only loading `nvm.sh`, which interactive `nvm use` needs, belongs in
+`~/.zshrc.local`. Both are gitignored so they never land in the package.
 
 **Secrets.** `make install` seeds `~/.zsh_secrets` from the example with mode 600 when
 the `zsh` package is selected and the file does not exist yet. `.zshrc` sources it only

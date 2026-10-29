@@ -1,0 +1,15 @@
+[Unit]
+Description=T3 Code Server
+# t3@latest is resolved from the npm registry on every start. A user unit cannot
+# order itself after the system's network-online.target, so a start before the
+# network is up fails and the restart below retries it.
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/t3-serve
+Restart=on-failure
+# Without a delay, a failed registry lookup would restart in a tight loop.
+RestartSec=5
+
+[Install]
+WantedBy=default.target

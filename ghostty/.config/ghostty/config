@@ -4,3 +4,6 @@ theme = TokyoNight
 
 background-opacity = 0.9
 background-blur = true
+
+# Copy Ghostty's terminfo to hosts on first ssh, so remote shells redraw correctly.
+shell-integration-features = ssh-terminfo

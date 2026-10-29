@@ -17,6 +17,8 @@ symlinks its contents into `~`.
 | `neovim/.config/nvim/*` | `~/.config/nvim/*` |
 | `opencode/.config/opencode/*` | `~/.config/opencode/*` |
 | `starship/.config/starship.toml` | `~/.config/starship.toml` |
+| `t3code/.local/bin/t3-serve` | `~/.local/bin/t3-serve` |
+| `t3code/.config/systemd/user/t3-serve.service` | `~/.config/systemd/user/t3-serve.service` |
 | `tmux/.tmux.conf` | `~/.tmux.conf` |
 | `zsh/.zshenv` | `~/.zshenv` |
 | `zsh/.zshrc` | `~/.zshrc` |

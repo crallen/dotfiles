@@ -44,6 +44,9 @@ install: ## Check out the submodule, seed settings and secrets, wire hooks, stow
 	@$(MAKE) --no-print-directory seed-settings
 	@$(MAKE) --no-print-directory seed-secrets
 	@$(MAKE) --no-print-directory hooks
+	@# Real directories keep stow from folding them into a link back into the repo,
+	@# where systemctl enable and the agent CLI installers would then write.
+	@case " $(PACKAGES) " in *" t3code "*) mkdir -p "$(HOME)/.local/bin" "$(HOME)/.config/systemd/user" ;; esac
 	@failed=""; for p in $(PACKAGES); do \
 	  if stow "$$p" 2>/dev/null; then echo "  stowed    $$p"; \
 	  else echo "  CONFLICT  $$p"; failed="$$failed $$p"; fi; \
@@ -86,7 +89,7 @@ t3-enable: ## Enable and start the t3-serve user service, warning when linger is
 	systemctl --user daemon-reload || exit 1; \
 	systemctl --user enable --now t3-serve.service || exit 1; \
 	echo "  enabled   t3-serve.service"; \
-	if [ "$$(loginctl show-user "$$USER" -p Linger --value 2>/dev/null)" != "yes" ]; then \
+	if [ "$$(loginctl show-user "$$(id -un)" -p Linger --value 2>/dev/null)" != "yes" ]; then \
 	  echo "  warn  linger is off, so t3-serve stops at logout — run 'sudo loginctl enable-linger \"\$$USER\"'"; fi
 
 hooks: ## Point both repos at their tracked .githooks directories

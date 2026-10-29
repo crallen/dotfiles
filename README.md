@@ -141,13 +141,15 @@ service:
 
 - `.local/bin/t3-serve` — zsh start script that runs
   `npx --yes t3@latest serve --host 127.0.0.1 --port 3773`. The server binds loopback
-  only, so the port is never exposed on the network
-- `.config/systemd/user/t3-serve.service` — the unit that runs the script. It waits
-  for `network-online.target` and restarts on failure after 5 seconds
+  only; the remote-access options below are the only ways off the machine
+- `.config/systemd/user/t3-serve.service` — the unit that runs the script. A user
+  unit cannot wait for the system's `network-online.target`, so a start before the
+  network is up fails and the unit retries every 5 seconds
 
 **PATH.** The script sets no PATH of its own. It is a zsh script, so zsh reads
 `~/.zshenv` before running it. The baseline puts `~/.local/bin` (where `claude` and
-`codex` live) and the newest installed nvm node on PATH. A machine that needs a
+`codex` live) and the newest installed nvm node on PATH; when an nvm node is already
+on PATH, such as after `nvm use` in a parent shell, that one is kept. A machine that needs a
 different node prepends it in `~/.zshenv.local`:
 
 ```zsh
@@ -157,6 +159,9 @@ path=(~/.nvm/versions/node/v22.22.2/bin $path)
 With no node on PATH, `npx` is not found and the unit fails and retries every 5
 seconds. Secrets never reach the server, because zsh reads `.zshrc` only for
 interactive shells.
+
+On a machine without a systemd user session (macOS, a container), leave `t3code`
+out of `packages.local`: `make install` would stow it and then fail to enable it.
 
 **Linger.** A user service stops at logout unless linger is on:
 

@@ -1,9 +1,8 @@
 [Unit]
 Description=T3 Code Server
-# t3@latest is resolved from the npm registry on every start, so the network
-# has to be up before ExecStart runs. `After=` alone does not pull the target in.
-Wants=network-online.target
-After=network-online.target
+# t3@latest is resolved from the npm registry on every start. A user unit cannot
+# order itself after the system's network-online.target, so a start before the
+# network is up fails and the restart below retries it.
 
 [Service]
 Type=simple

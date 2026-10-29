@@ -8,8 +8,7 @@
 # node names it in ~/.zshenv.local.
 
 # `serve` is the headless entrypoint: no browser, prints pairing details on start.
-# It binds loopback only, so the port is never exposed on the network; reach it
-# through an SSH tunnel or a local reverse proxy. t3@latest re-resolves from the
-# registry on every start, so the unit waits for network-online.target and retries
-# on failure.
+# It binds loopback only; reach it over SSH, a local reverse proxy, Tailscale
+# Serve, or T3 Connect. t3@latest re-resolves from the registry on every start,
+# and the unit retries on failure until the network is up.
 exec npx --yes t3@latest serve --host 127.0.0.1 --port 3773 "$@"

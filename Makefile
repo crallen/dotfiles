@@ -8,7 +8,7 @@
 # Every package in the repo. A machine that wants only some of them writes those
 # names into packages.local (gitignored, one line or one per line); machines with
 # no such file get everything. Override for a single run with `make PACKAGES=...`.
-ALL      := claude codex ghostty neovim opencode starship tmux zsh
+ALL      := claude codex ghostty neovim opencode starship t3code tmux zsh
 PACKAGES ?= $(shell cat packages.local 2>/dev/null || echo $(ALL))
 SUITE    := agent-suite
 
@@ -33,13 +33,13 @@ SECRETS      := $(HOME)/.zsh_secrets
 SECRETS_SEED := zsh/.zsh_secrets.example
 
 .DEFAULT_GOAL := help
-.PHONY: help install check suite-check seed-settings seed-secrets hooks relink update status
+.PHONY: help install check suite-check seed-settings seed-secrets t3-enable hooks relink update status
 
 help: ## Show this help
-	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-z0-9-]+:.*?## ' $(MAKEFILE_LIST) \
 	  | awk -F':.*?## ' '{printf "  \033[36m%-8s\033[0m %s\n", $$1, $$2}'
 
-install: ## Check out the submodule, seed settings and secrets, wire hooks, and stow every package
+install: ## Check out the submodule, seed settings and secrets, wire hooks, stow every package, and enable t3-serve
 	@git submodule update --init --recursive
 	@$(MAKE) --no-print-directory seed-settings
 	@$(MAKE) --no-print-directory seed-secrets
@@ -53,6 +53,7 @@ install: ## Check out the submodule, seed settings and secrets, wire hooks, and 
 	  echo "Inspect with 'stow -n <package>', then move the file aside or skip the package."; \
 	  exit 1; \
 	fi
+	@$(MAKE) --no-print-directory t3-enable
 
 check: ## Verify every suite link and settings.json, then run the suite's own validator
 	@scripts/links.py
@@ -75,6 +76,18 @@ seed-secrets: ## Copy the zsh secrets example to ~/.zsh_secrets (mode 600) when 
 	if [ -e "$(SECRETS)" ]; then exit 0; fi; \
 	umask 077; cp $(SECRETS_SEED) "$(SECRETS)" && \
 	echo "  seeded    $(SECRETS) from $(SECRETS_SEED)"
+
+# t3-serve is a user unit, so stowing it is not enough: systemd has to reread
+# its units and enable this one. `enable --now` starts it when stopped and leaves
+# a running server alone — install never restarts it. Without linger the service
+# stops at logout, so a missing linger gets a warning, not a failure.
+t3-enable: ## Enable and start the t3-serve user service, warning when linger is off
+	@case " $(PACKAGES) " in *" t3code "*) ;; *) exit 0 ;; esac; \
+	systemctl --user daemon-reload || exit 1; \
+	systemctl --user enable --now t3-serve.service || exit 1; \
+	echo "  enabled   t3-serve.service"; \
+	if [ "$$(loginctl show-user "$$USER" -p Linger --value 2>/dev/null)" != "yes" ]; then \
+	  echo "  warn  linger is off, so t3-serve stops at logout — run 'sudo loginctl enable-linger \"\$$USER\"'"; fi
 
 hooks: ## Point both repos at their tracked .githooks directories
 	@git config core.hooksPath .githooks && echo "  hooks     dotfiles -> .githooks"

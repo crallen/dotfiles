@@ -129,7 +129,7 @@ script. Lands as a Forgejo PR.
   `enable --now`, linger warning); call it from `install` after the stow loop.
 - [ ] 4. Update `README.md` (layout, symlink list, requirements, `t3code` section, and
   the `zsh` section's nvm note) and the `CLAUDE.md` package table. (blocked by 1, 2, 3, 7)
-- [ ] 5. Migrate this machine: remove
+- [x] 5. Migrate this machine: remove
   the `~/.config/systemd/user/t3-serve.service` symlink into `homelab-services`; add
   `t3code` to `packages.local`; run `make install`; run Testing 3 and 6; hand the
   restart to the user. (blocked by 1, 2, 3, 7)

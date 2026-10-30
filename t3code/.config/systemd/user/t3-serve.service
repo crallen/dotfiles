@@ -10,6 +10,8 @@ ExecStart=%h/.local/bin/t3-serve
 Restart=on-failure
 # Without a delay, a failed registry lookup would restart in a tight loop.
 RestartSec=5
+# Exit 78 (EX_CONFIG) means another server owns the T3 home; retrying cannot fix it.
+RestartPreventExitStatus=78
 
 [Install]
 WantedBy=default.target

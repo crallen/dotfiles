@@ -1,4 +1,11 @@
 #!/bin/sh
+# core.hooksPath points here, so git skips the clone's own .git/hooks/pre-commit;
+# run it first when one is installed.
+local_hook="$(git rev-parse --absolute-git-dir)/hooks/pre-commit"
+if [ -x "$local_hook" ]; then
+  "$local_hook" "$@" || exit
+fi
+
 # Run make check when a commit touches a suite package or the submodule pointer.
 if git diff --cached --name-only | grep -qE '^(claude|codex|opencode)/|^agent-suite$'; then
   exec make check -s

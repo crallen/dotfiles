@@ -12,3 +12,14 @@ claude/.claude/settings.json
 
 # Project-local agent state (agent memory, worktrees).
 .claude/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/

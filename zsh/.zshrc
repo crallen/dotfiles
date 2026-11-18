@@ -76,6 +76,8 @@ unset _keys _seq _cap _widget
 alias ls='ls --color=auto'
 alias ll='ls -lhFA'
 alias grep='grep --color=auto'
+# Arch ships the Gitea CLI as `gt`; keep the upstream `tea` name working.
+(( ! $+commands[tea] && $+commands[gt] )) && alias tea='gt'
 
 # ===========================================================================
 # Plugins

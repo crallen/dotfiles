@@ -8,9 +8,12 @@
 # Every package in the repo. A machine that wants only some of them writes those
 # names into packages.local (gitignored, one line or one per line); machines with
 # no such file get everything. Override for a single run with `make PACKAGES=...`.
-ALL      := claude codex ghostty neovim opencode starship t3code tmux zsh
-PACKAGES ?= $(shell cat packages.local 2>/dev/null || echo $(ALL))
-SUITE    := agent-suite
+# t3code is not a stow package: selecting it installs T3 Code's own background
+# service (see t3-service), so STOW_PKGS leaves it out.
+ALL       := claude codex ghostty neovim opencode starship t3code tmux zsh
+PACKAGES  ?= $(shell cat packages.local 2>/dev/null || echo $(ALL))
+STOW_PKGS := $(filter-out t3code,$(PACKAGES))
+SUITE     := agent-suite
 
 # The packages holding links into the suite. Adding a top-level entry to one of
 # these (a commands/ directory, a codex skill) needs a restow before it reaches
@@ -33,21 +36,18 @@ SECRETS      := $(HOME)/.zsh_secrets
 SECRETS_SEED := zsh/.zsh_secrets.example
 
 .DEFAULT_GOAL := help
-.PHONY: help install check suite-check seed-settings seed-secrets t3-enable hooks relink update status
+.PHONY: help install check suite-check seed-settings seed-secrets t3-service hooks relink update status
 
 help: ## Show this help
 	@grep -hE '^[a-z0-9-]+:.*?## ' $(MAKEFILE_LIST) \
 	  | awk -F':.*?## ' '{printf "  \033[36m%-8s\033[0m %s\n", $$1, $$2}'
 
-install: ## Check out the submodule, seed settings and secrets, wire hooks, stow every package, and enable t3-serve
+install: ## Check out the submodule, seed settings and secrets, wire hooks, stow every package, and install the T3 Code service
 	@git submodule update --init --recursive
 	@$(MAKE) --no-print-directory seed-settings
 	@$(MAKE) --no-print-directory seed-secrets
 	@$(MAKE) --no-print-directory hooks
-	@# Real directories keep stow from folding them into a link back into the repo,
-	@# where systemctl enable and the agent CLI installers would then write.
-	@case " $(PACKAGES) " in *" t3code "*) mkdir -p "$(HOME)/.local/bin" "$(HOME)/.config/systemd/user" ;; esac
-	@failed=""; for p in $(PACKAGES); do \
+	@failed=""; for p in $(STOW_PKGS); do \
 	  if stow "$$p" 2>/dev/null; then echo "  stowed    $$p"; \
 	  else echo "  CONFLICT  $$p"; failed="$$failed $$p"; fi; \
 	done; \
@@ -56,7 +56,7 @@ install: ## Check out the submodule, seed settings and secrets, wire hooks, stow
 	  echo "Inspect with 'stow -n <package>', then move the file aside or skip the package."; \
 	  exit 1; \
 	fi
-	@$(MAKE) --no-print-directory t3-enable
+	@$(MAKE) --no-print-directory t3-service
 
 check: ## Verify every suite link and settings.json, then run the suite's own validator
 	@scripts/links.py
@@ -80,17 +80,34 @@ seed-secrets: ## Copy the zsh secrets example to ~/.zsh_secrets (mode 600) when 
 	umask 077; cp $(SECRETS_SEED) "$(SECRETS)" && \
 	echo "  seeded    $(SECRETS) from $(SECRETS_SEED)"
 
-# t3-serve is a user unit, so stowing it is not enough: systemd has to reread
-# its units and enable this one. `enable --now` starts it when stopped and leaves
-# a running server alone — install never restarts it. Without linger the service
-# stops at logout, so a missing linger gets a warning, not a failure.
-t3-enable: ## Enable and start the t3-serve user service, warning when linger is off
+# T3 Code runs under its own service (`t3 service install`), not a unit from this
+# repo: only a server started by t3's launcher can update itself when a client
+# asks. This repo used to stow a t3-serve unit and start script; when that unit
+# is still loaded, this target stops it and unlinks the leftovers. Quit any
+# T3 Code desktop app connected over SSH first, or it starts its own server in
+# the gap, and run this over SSH, not from a T3 Code terminal, which dies with
+# t3-serve. The server takes PATH from a login run of the user manager's $SHELL
+# (see README). The launcher is installed only when missing; `t3 update` moves
+# launcher and service to a new release.
+T3        := $(HOME)/.local/bin/t3
+T3_LEGACY := $(HOME)/.config/systemd/user/t3-serve.service $(HOME)/.local/bin/t3-serve
+T3_WANTS  := $(HOME)/.config/systemd/user/default.target.wants/t3-serve.service
+t3-service: ## Install the t3 launcher and T3 Code's background service, retiring the old t3-serve unit
 	@case " $(PACKAGES) " in *" t3code "*) ;; *) exit 0 ;; esac; \
-	systemctl --user daemon-reload || exit 1; \
-	systemctl --user enable --now t3-serve.service || exit 1; \
-	echo "  enabled   t3-serve.service"; \
-	if [ "$$(loginctl show-user "$$(id -un)" -p Linger --value 2>/dev/null)" != "yes" ]; then \
-	  echo "  warn  linger is off, so t3-serve stops at logout — run 'sudo loginctl enable-linger \"\$$USER\"'"; fi
+	if [ -L "$(T3_WANTS)" ] || systemctl --user is-active --quiet t3-serve.service; then \
+	  systemctl --user stop t3-serve.service || exit 1; \
+	  for f in $(T3_WANTS) $(T3_LEGACY); do \
+	    if [ -L "$$f" ]; then unlink "$$f"; \
+	    elif [ -e "$$f" ]; then echo "  warn  $$f is a real file, left in place"; fi; \
+	  done; \
+	  systemctl --user daemon-reload; \
+	  echo "  retired   t3-serve.service"; \
+	fi; \
+	if [ ! -x "$(T3)" ]; then npx --yes t3@latest install || exit 1; fi; \
+	"$(T3)" service install || exit 1; \
+	if command -v loginctl >/dev/null 2>&1 && \
+	   [ "$$(loginctl show-user "$$(id -un)" -p Linger --value 2>/dev/null)" != "yes" ]; then \
+	  echo "  warn  linger is off, so the T3 Code service stops at logout — run 'sudo loginctl enable-linger \"\$$USER\"'"; fi
 
 hooks: ## Point both repos at their tracked .githooks directories
 	@git config core.hooksPath .githooks && echo "  hooks     dotfiles -> .githooks"
@@ -128,6 +145,10 @@ update: ## Pull the latest agent-suite, relink, and show the pointer to commit
 status: ## Show which packages are stowed, and which this machine skips
 	@for p in $(ALL); do \
 	  case " $(PACKAGES) " in *" $$p "*) ;; *) printf "  %-10s %s\n" "$$p" "skipped here"; continue ;; esac; \
+	  if [ "$$p" = t3code ]; then \
+	    s=$$("$(T3)" service status 2>/dev/null | sed -n 's/^ *Status: //p'); \
+	    printf "  %-10s service %s\n" "$$p" "$${s:-unknown (no t3 launcher)}"; continue; \
+	  fi; \
 	  out=$$(stow -n -v "$$p" 2>&1); \
 	  if echo "$$out" | grep -q 'WARNING! stowing'; then s="conflict"; \
 	  elif echo "$$out" | grep -q '^LINK:'; then s="not stowed"; \

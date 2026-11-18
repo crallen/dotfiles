@@ -17,8 +17,6 @@ symlinks its contents into `~`.
 | `neovim/.config/nvim/*` | `~/.config/nvim/*` |
 | `opencode/.config/opencode/*` | `~/.config/opencode/*` |
 | `starship/.config/starship.toml` | `~/.config/starship.toml` |
-| `t3code/.local/bin/t3-serve` | `~/.local/bin/t3-serve` |
-| `t3code/.config/systemd/user/t3-serve.service` | `~/.config/systemd/user/t3-serve.service` |
 | `tmux/.tmux.conf` | `~/.tmux.conf` |
 | `zsh/.zshenv` | `~/.zshenv` |
 | `zsh/.zshrc` | `~/.zshrc` |
@@ -27,6 +25,11 @@ So a file at `<package>/<path>` is what lives at `~/<path>` once stowed. To add 
 config file, place it inside the matching package at the path it should occupy under `~`.
 
 `agent-suite/` is **not** a Stow package. It is a git submodule, described below.
+
+`t3code` is a name in `ALL`/`packages.local` with no directory: selecting it makes
+`make install` run `make t3-service`, which installs T3 Code's own background service
+(`t3 service install`). Do not add a unit or start script for it here; a server not
+started by t3's launcher cannot update itself from a remote client.
 
 ## Working here
 

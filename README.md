@@ -22,9 +22,6 @@ dotfiles/
 │   └── .config/opencode/   # OpenCode config; agent/skills/commands link into agent-suite/
 ├── starship/
 │   └── .config/starship.toml # Starship prompt config
-├── t3code/
-│   ├── .local/bin/t3-serve # Start script for the T3 Code server
-│   └── .config/systemd/user/t3-serve.service # systemd user unit that runs it
 ├── tmux/
 │   └── .tmux.conf          # tmux config
 └── zsh/
@@ -42,9 +39,9 @@ dotfiles/
 - OpenCode (for the `opencode` package)
 - Neovim (for the `neovim` package)
 - Ghostty (for the `ghostty` package)
-- For the `t3code` package: node and npx, from nvm or anywhere else on PATH; the
-  agent CLIs (`claude`, `codex`) in `~/.local/bin`; a systemd user session. The
-  `zsh` package supplies the PATH the start script reads
+- For `t3code`: npx on PATH for the first install; a systemd user session (Linux)
+  or launchd (macOS); the agent CLIs (`claude`, `codex`) on the PATH of the shell
+  that runs `make`
 - tmux (for the `tmux` package)
 - zsh (for the `zsh` package); optionally fzf, zsh-autosuggestions, and
   zsh-syntax-highlighting, which it loads when installed
@@ -61,7 +58,7 @@ cd dotfiles && make install
 `make install` checks out the submodule, seeds `claude/.claude/settings.json` and
 `~/.zsh_secrets` from their examples when absent, and stows the packages this machine
 wants, reporting any whose target already holds a real file. When `t3code` is among
-them, it then enables and starts the `t3-serve` user service. `make help` lists the rest;
+them, it then installs T3 Code's background service (`make t3-service`). `make help` lists the rest;
 `make check` verifies the suite symlinks and runs the suite's validator.
 
 To stow only some packages on a given machine, list them in `packages.local` (one
@@ -79,8 +76,6 @@ Because `.stowrc` sets `--target=~`, this will symlink:
 - `neovim/.config/nvim/*` → `~/.config/nvim/*`
 - `opencode/.config/opencode/*` → `~/.config/opencode/*`
 - `starship/.config/starship.toml` → `~/.config/starship.toml`
-- `t3code/.local/bin/t3-serve` → `~/.local/bin/t3-serve`
-- `t3code/.config/systemd/user/t3-serve.service` → `~/.config/systemd/user/t3-serve.service`
 - `tmux/.tmux.conf` → `~/.tmux.conf`
 - `zsh/.zshenv`, `zsh/.zshrc` → `~/.zshenv`, `~/.zshrc`
 
@@ -136,72 +131,67 @@ The OpenCode config (`~/.config/opencode/`):
 
 ### `t3code`
 
-Runs the [T3 Code](https://github.com/pingdotgg/t3code) server as a systemd user
-service:
+Not a stow package. Selecting `t3code` makes `make install` run `make t3-service`,
+which installs the `t3` launcher in `~/.local/bin` (via `npx t3@latest install`, only
+when missing) and then T3 Code's own background service with `t3 service install`:
+a systemd user unit, `t3code.service`, on Linux; a launchd agent on macOS.
 
-- `.local/bin/t3-serve` — zsh start script that runs
-  `npx --yes t3@latest serve --host 127.0.0.1 --port 3773`. The server binds loopback
-  only; the remote-access options below are the only ways off the machine
-- `.config/systemd/user/t3-serve.service` — the unit that runs the script. A user
-  unit cannot wait for the system's `network-online.target`, so a start before the
-  network is up fails and the unit retries every 5 seconds
+The service must come from t3 itself. Only a server started by t3's launcher reports
+that it can update itself, so a remote client can update it without SSH. An earlier
+version of this repo ran `npx t3@latest serve` from its own `t3-serve` unit, which
+the client could only offer to update manually.
 
-**PATH.** The script sets no PATH of its own. It is a zsh script, so zsh reads
-`~/.zshenv` before running it. The baseline puts `~/.local/bin` (where `claude` and
-`codex` live) and the newest installed nvm node on PATH; when an nvm node is already
-on PATH, such as after `nvm use` in a parent shell, that one is kept. A machine that needs a
-different node prepends it in `~/.zshenv.local`:
+**PATH.** On Linux the unit sets no PATH. At startup the server runs
+`$SHELL` as a login shell and takes PATH from it, so `.zshenv` supplies node and
+`~/.local/bin` (the agent CLIs). `$SHELL` there is the systemd user manager's, which
+it reads from the user record when it starts. After a `chsh`, the manager keeps the
+old shell until it restarts (reboot, or log out with linger off), and the server
+reads the wrong profile. Check and fix it without a reboot:
 
-```zsh
-path=(~/.nvm/versions/node/v22.22.2/bin $path)
+```bash
+systemctl --user show-environment | grep ^SHELL
+systemctl --user set-environment SHELL="$(getent passwd "$USER" | cut -d: -f7)"
+t3 service restart
 ```
 
-With no node on PATH, `npx` is not found and the unit fails and retries every 5
-seconds. Secrets never reach the server, because zsh reads `.zshrc` only for
-interactive shells.
-
-On a machine without a systemd user session (macOS, a container), leave `t3code`
-out of `packages.local`: `make install` would stow it and then fail to enable it.
-
-**Linger.** A user service stops at logout unless linger is on:
+**Linger.** A user service stops at logout unless linger is on; `make t3-service`
+warns when it is off:
 
 ```bash
 sudo loginctl enable-linger "$USER"
 ```
 
-**Install.** After stowing, `make install` runs `systemctl --user daemon-reload` and
-`systemctl --user enable --now t3-serve.service`, then warns if linger is off. It
-starts a stopped server but never restarts a running one, so edits to the script or
-unit take effect on the next restart.
+**Migrating a machine from `t3-serve`.** Quit the T3 Code desktop app on every
+machine that connects to this one over SSH first. An app that set this host up over
+SSH treats its server as its own: when it sees no server, it starts its own copy at
+its own version within seconds, which takes the T3 home before the service can and
+leaves the service waiting. Then, after pulling this change, run `make t3-service`
+over SSH, not from a T3 Code terminal (it stops the server that terminal runs
+under). It stops `t3-serve.service`, removes its stowed links and
+`default.target.wants` entry, reloads systemd, and installs the new service. Reopen
+the app once `t3 status` shows the service installed; the app then attaches to the
+service's server instead of starting one.
 
 **Operations.**
 
 ```bash
-systemctl --user restart t3-serve     # also picks up a new t3 release
-systemctl --user status t3-serve
-journalctl --user -u t3-serve -f      # follow logs
+t3 status                  # service and remote access
+t3 update                  # download the newest release and switch the service to it
+t3 service restart
+t3 service status          # unit and log file paths
 ```
 
-The script runs `t3@latest`, so every start resolves the newest release from npm.
+A client connected to this machine can also update it from the app.
 
-**First stow.** A machine that already has `~/.config/systemd/user/t3-serve.service`,
-such as a symlink from an earlier install, makes `make install` report a conflict for
-`t3code`. Remove it first:
+**Remote access.** The T3 Code app on a laptop connects over SSH. A phone or browser
+needs one of these; `t3 up` walks through them:
 
-```bash
-rm ~/.config/systemd/user/t3-serve.service
-make install
-```
-
-**Remote access.** The T3 Code app on a laptop connects over SSH and attaches to the
-running server on port 3773. A phone or browser needs one of these:
-
-- Tailscale: `npx t3@latest pair --tailscale` publishes the server over Tailscale
-  Serve on the tailnet and pairs the device against that origin
-- T3 Connect: `npx t3@latest connect login --headless` authorizes the host against
-  your account, then `npx t3@latest connect link` exposes it through the T3 relay.
-  `npx t3@latest connect publish` turns on push notifications, which `connect link`
-  alone does not
+- Tailscale: `t3 pair --tailscale` publishes the server over Tailscale Serve on the
+  tailnet and pairs the device against that origin
+- T3 Connect: `t3 connect login --headless` authorizes the host against your
+  account, then `t3 connect link` exposes it through the T3 relay.
+  `t3 connect publish` turns on push notifications, which `connect link` alone
+  does not
 
 ### `tmux`
 

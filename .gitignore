@@ -23,3 +23,11 @@ __pycache__/
 .coverage
 htmlcov/
 *.egg-info/
+
+# Codex runtime state. ~/.codex is a folded stow link to codex/.codex, so Codex writes its
+# auth token, databases, logs, and caches into this package. Track only AGENTS.md and the
+# suite's skill links; Codex's bundled .system skills are its own.
+codex/.codex/*
+!codex/.codex/AGENTS.md
+!codex/.codex/skills/
+codex/.codex/skills/.system/

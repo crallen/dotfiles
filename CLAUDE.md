@@ -78,12 +78,18 @@ under `~` until a restow creates it. `make relink` restows all three for that re
 **Changes to an agent, skill, or command belong in the submodule**, not here. Follow
 `agent-suite/README.md` for its sync and validation rules; its own CI enforces them.
 Editing a suite file is live immediately, same as any other symlinked file. Persisting
-it takes two steps:
+it takes a pull request in the suite, then a pointer bump here once it merges:
 
 ```sh
-cd agent-suite && git commit ... && git push   # the real change
-cd .. && git add agent-suite && git commit     # bump the pointer dotfiles records
+cd agent-suite && git switch -c <type>/<topic>   # the submodule often sits on a detached HEAD
+git commit ... && git push -u origin HEAD && gh pr create
+cd .. && git add agent-suite && git commit       # after the merge: bump the pointer
 ```
+
+A PR touching the suite's `skills/` or `platforms/` must carry an eval report or an
+`evals: n/a` line, or its CI fails; "Evals" in `agent-suite/AGENTS.md` covers both.
+Open suite PRs with `gh` from inside `agent-suite/`: a PR tool bound to this checkout
+targets the dotfiles branch, not the submodule's.
 
 The pointer bump can be batched — dotfiles simply lags the suite until you make one.
 On a fresh machine, clone with `--recurse-submodules` (or run `git submodule update

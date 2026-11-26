@@ -4,31 +4,23 @@ Personal dotfiles managed with GNU Stow.
 
 ## Repo Layout
 
-```text
-dotfiles/
-├── .stowrc                 # Stow target config (`~`)
-├── Makefile                # install / check / relink / update / status
-├── scripts/links.py        # Owns the suite symlink manifest; --relink repairs it
-├── agent-suite/            # Submodule: agents, skills, commands (not a Stow package)
-├── claude/
-│   └── .claude/            # Claude Code config; agents/skills/commands link into agent-suite/
-├── codex/
-│   └── .codex/             # Codex AGENTS.md + skills; all link into agent-suite/
-├── ghostty/
-│   └── .config/ghostty/    # Ghostty terminal config
-├── neovim/
-│   └── .config/nvim/       # LazyVim-based Neovim config
-├── opencode/
-│   └── .config/opencode/   # OpenCode config; agent/skills/commands link into agent-suite/
-├── starship/
-│   └── .config/starship.toml # Starship prompt config
-├── tmux/
-│   └── .tmux.conf          # tmux config
-└── zsh/
-    ├── .zshenv             # Env and PATH for every zsh process
-    ├── .zshrc              # Interactive shell config
-    └── .zsh_secrets.example # Seed for ~/.zsh_secrets (not stowed)
-```
+Each top-level directory except `agent-suite/` is a Stow package whose contents
+mirror their path under `~`.
+
+| Package | Configures |
+|---|---|
+| `claude` | Claude Code; its agents, skills, and commands link into `agent-suite/` |
+| `codex` | Codex's `AGENTS.md` and skills, all linked into `agent-suite/` |
+| `ghostty` | Ghostty terminal |
+| `neovim` | Neovim, LazyVim-based |
+| `opencode` | OpenCode; its agents, skills, and commands link into `agent-suite/` |
+| `starship` | Starship prompt |
+| `tmux` | tmux |
+| `zsh` | zsh environment and interactive shell; `.zsh_secrets.example` seeds `~/.zsh_secrets` and is not stowed |
+
+`agent-suite/` is a git submodule holding the agents, skills, and commands. The
+`Makefile` drives install, check, relink, update, and status, and
+`scripts/links.py` owns the manifest of links into the submodule.
 
 ## Requirements
 

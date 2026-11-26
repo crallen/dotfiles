@@ -117,7 +117,10 @@ suite-check:
 	@if ! command -v uv >/dev/null 2>&1; then \
 	  echo "uv is required to run the suite validator: https://docs.astral.sh/uv/"; exit 1; \
 	fi
+	@# A commit hook exports GIT_INDEX_FILE and friends for this repo; inside the
+	@# submodule they name the wrong index, so drop them before the suite runs git.
 	@if [ -x $(SUITE)/scripts/validate-config.py ]; then \
+	  unset $$(git rev-parse --local-env-vars); \
 	  cd $(SUITE) && scripts/validate-config.py -q; \
 	else \
 	  echo "$(SUITE) is not checked out — run 'make install'"; exit 1; \

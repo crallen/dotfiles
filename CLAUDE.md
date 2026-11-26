@@ -125,7 +125,7 @@ manifest — the seven whole-directory links plus one per codex skill — and `-
 repairs anything missing, wrong, or stale.
 
 `make check` also verifies `claude/.claude/settings.json` exists and carries every
-deny rule from the suite's example, and warns when `core.hooksPath` is unset.
+deny rule and hook from the suite's example, and warns when `core.hooksPath` is unset.
 `make hooks` points both repos at their tracked `.githooks/`; `make install` does it
 for you. The dotfiles hook runs `make check` on commits touching a suite package or
 the submodule pointer; the suite's own hook runs its validator. Both need `uv`, the

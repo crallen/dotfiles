@@ -137,12 +137,24 @@ def check_live(quiet: bool, codex_probe: str | None) -> None:
             print(f"  ok    {pkg:<10} ~/{path.relative_to(home)} -> {target.relative_to(ROOT)}")
 
 
+def hook_commands(settings: dict) -> set[tuple[str, str, str]]:
+    """Every hook as (event, matcher, command), so two files compare as sets."""
+    return {
+        (event, group.get("matcher", ""), hook.get("command", ""))
+        for event, groups in settings.get("hooks", {}).items()
+        for group in groups
+        for hook in group.get("hooks", [])
+    }
+
+
 def check_settings(quiet: bool) -> None:
-    """The gitignored settings file exists and carries every deny rule the example has.
+    """The gitignored settings file exists and carries every deny rule and hook the example has.
 
     Stow says nothing when the file is missing, and the deny list guarding .env
-    files and private keys goes missing with it. Other keys are machine-local by
-    design and are not compared.
+    files and private keys goes missing with it. make install seeds the file only
+    when it is absent, so a rule or hook added to the example later never reaches
+    a machine that already has one. Other keys are machine-local by design and
+    are not compared.
     """
     if not (Path.home() / ".claude/skills").exists():
         if not quiet:
@@ -153,16 +165,24 @@ def check_settings(quiet: bool) -> None:
         fail(f"{SETTINGS} is missing — run 'make seed-settings'")
         return
     try:
-        live_deny = set(json.loads(live.read_text()).get("permissions", {}).get("deny", []))
-        seed_deny = set(json.loads(seed.read_text()).get("permissions", {}).get("deny", []))
+        live_json = json.loads(live.read_text())
+        seed_json = json.loads(seed.read_text())
     except (json.JSONDecodeError, OSError) as e:
         fail(f"could not read settings: {e}")
         return
+    live_deny = set(live_json.get("permissions", {}).get("deny", []))
+    seed_deny = set(seed_json.get("permissions", {}).get("deny", []))
     missing = sorted(seed_deny - live_deny)
     for rule in missing:
         fail(f"{SETTINGS}: deny rule {rule!r} from the suite example is absent")
-    if not missing and not quiet:
-        print(f"  ok    settings   {SETTINGS} carries all {len(seed_deny)} example deny rules")
+    seed_hooks = hook_commands(seed_json)
+    missing_hooks = sorted(seed_hooks - hook_commands(live_json))
+    for event, matcher, _ in missing_hooks:
+        fail(f"{SETTINGS}: {event} hook for {matcher!r} from the suite example is absent "
+             f"or differs; copy it from {SETTINGS_SEED}")
+    if not missing and not missing_hooks and not quiet:
+        print(f"  ok    settings   {SETTINGS} carries all {len(seed_deny)} example deny rules "
+              f"and {len(seed_hooks)} example hook{'' if len(seed_hooks) == 1 else 's'}")
 
 
 def main() -> int:
